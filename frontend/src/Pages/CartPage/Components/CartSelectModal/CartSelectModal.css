@@ -1,0 +1,136 @@
+.cart-select-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(86, 86, 86, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.cart-select-modal {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    width: 90%;
+    max-width: 350px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.cart-select-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 20px;
+    border-bottom: #3333335a solid 1px;
+}
+.cart-select-header p{
+  padding: 0;
+  margin: 0;
+}
+
+.cart-select-close {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: black;
+}
+
+.cart-select-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.cart-select-option {
+    border: 1px solid black;
+    border-radius: 8px;
+    padding: 8px 12px;
+    background-color: white;
+    color: black;
+    cursor: pointer;
+    min-width: 40px;
+    text-align: center;
+}
+
+.cart-select-selected {
+    background-color: #fdd835;
+    /* yellow */
+    border-color: #fdd835;
+}
+
+.cart-select-fit-text {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+.cart-select-confirm {
+    background-color: #fdd835;
+    color: black;
+    border: none;
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.cart-select-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #b5b5b5;
+}
+
+
+
+.cart-select-size-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cart-select-option {
+  border: 1px solid black;
+  border-radius: 8px;
+  padding: 8px 12px;
+  background-color: white;
+  cursor: pointer;
+  min-width: 40px;
+  text-align: center;
+  transition: border 0.2s;
+}
+
+.cart-select-option:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background-color: #f0f0f0;
+  color: #999;
+}
+
+.cart-select-selected {
+  background-color: #fdd835;
+  /* border-color: #fdd835; */
+}
+
+.cart-select-lowstock {
+  border: 1px solid red !important;
+}
+
+.cart-select-lowstock-text {
+  font-size: 11px;
+  color: red;
+  margin-top: 3px;
+}

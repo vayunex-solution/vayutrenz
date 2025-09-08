@@ -1,0 +1,194 @@
+.login-page-outer-container {
+    display: flex;
+    width: 100vw;
+    justify-content: center;
+}
+
+.login-page-inner-container {
+    display: flex;
+    max-width: 1400px;
+    width: 100%;
+    flex-direction: row;
+}
+
+@media (max-width: 1000px) {
+    .login-page-inner-container {
+        flex-direction: column;
+        width: 100%;
+    }
+}
+
+.login-page-left {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-page-left-image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.login-page-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 40px;
+    justify-content: center;
+}
+
+.login-page-heading {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.login-page-subtext {
+    font-size: 14px;
+    color: gray;
+    margin-bottom: 30px;
+}
+
+.login-page-phone-input {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+.login-page-flag {
+    margin-right: 10px;
+}
+
+.login-page-input {
+    border: none;
+    outline: none;
+    flex: 1;
+    font-size: 16px;
+    background-color: white;
+    color: black;
+}
+
+.login-page-continue-button {
+    width: 100%;
+    padding: 12px;
+    background-color: rgb(255, 210, 50);
+    color: rgb(49, 49, 49);
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.login-page-continue-button.login-page-continue-button-disable {
+    background-color: #ccc;
+    color: rgb(147, 146, 146);
+}
+
+.login-page-or-line {
+    text-align: center;
+    margin: 20px 0;
+    position: relative;
+}
+
+.login-page-or-line::before,
+.login-page-or-line::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 40%;
+    height: 1px;
+    background-color: #ccc;
+}
+
+.login-page-or-line::before {
+    left: 0;
+}
+
+.login-page-or-line::after {
+    right: 0;
+}
+
+.login-page-social-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.login-page-social-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: white;
+    color: rgb(79, 79, 79);
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.login-page-social-button img {
+    width: 25px;
+    height: 25px;
+}
+
+.login-page-checkbox {
+    display: flex;
+    background-color: white;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.login-page-checkbox input {
+    margin-right: 8px;
+}
+
+.login-page-terms {
+    font-size: 12px;
+    color: gray;
+    line-height: 1.5;
+}
+
+.login-page-terms a {
+    color: blue;
+    text-decoration: underline;
+}
+
+/* // business account button // */
+.login-page-ba-container {
+    border: 1px solid #ccc;
+    padding: 12px;
+    text-align: center;
+    border-radius: 4px;
+    font-family: Arial, sans-serif;
+    margin-bottom: 30px;
+}
+
+.login-page-ba-heading {
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.login-page-ba-link {
+    margin-top: 4px;
+}
+
+.login-page-ba-blue-text {
+    color: #0073bb;
+    text-decoration: none;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.login-page-ba-blue-text:hover {
+    text-decoration: underline;
+}

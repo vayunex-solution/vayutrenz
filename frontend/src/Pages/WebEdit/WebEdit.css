@@ -1,0 +1,62 @@
+.web-edit-page-container {
+    padding: 20px;
+}
+.web-edit-page-content * {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
+}
+
+.web-edit-page-button-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding: 10px;
+    position: sticky;
+    top: 60px;
+    background-color: white;
+    border-bottom: #6262626d solid 0.5px;
+    overflow-x: scroll;
+}
+
+.web-edit-page-button {
+    background-color: #ffd500;
+    color: black;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: transform 0.2s ease;
+}
+
+.web-edit-page-button:hover {
+    transform: scale(1.05);
+}
+
+.web-edit-page-button.active {
+    outline: 2px solid black;
+}
+
+.web-edit-page-content {
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+.web-edit-page-section {
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+
+
+@media (max-width:650px) {
+    .web-edit-page-container{
+        padding: 5px;
+    }
+    .web-edit-page-content {
+        padding: 5px;
+    }
+}

@@ -1,0 +1,111 @@
+.web-edit-main-container {
+    width: 100%;
+    min-height: 100vh;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    /* padding: 2rem; */
+    box-sizing: border-box;
+}
+
+.web-edit-inner-div {
+    width: 100%;
+    max-width: 800px;
+}
+
+.web-edit-section-heading {
+    font-size: 1.5rem;
+    margin: 1.5rem 0 1rem;
+    font-weight: 600;
+}
+
+.web-edit-first-div{
+    margin-top: 20px;
+}
+.web-edit-first-div,
+.web-edit-second-div {
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 12px;
+    background-color: #f9f9f9;
+    margin-bottom: 2rem;
+}
+
+.web-edit-navbar-form,
+.web-edit-nav-form {
+    display: flex;
+    flex-direction: column;
+    padding-bottom:1.5rem;
+    padding-top:1.5rem;
+}
+
+.web-edit-form-box,
+.web-edit-nav-subform {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.web-edit-label {
+    font-size: 1rem;
+    color: #333;
+}
+
+.web-edit-input {
+    width: 95%;
+    padding: 0.6rem;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: 1px solid #3e3d3d;
+    background-color: white;
+    color: black;
+}
+
+.web-edit-submit-button,
+.web-edit-add-button,
+.web-edit-clear-button {
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.web-edit-submit-button {
+    background-color: #4caf50;
+    color: white;
+}
+
+.web-edit-submit-button:hover {
+    background-color: #45a049;
+}
+
+.web-edit-add-button {
+    background-color: #2196f3;
+    color: white;
+}
+
+.web-edit-add-button:hover {
+    background-color: #1976d2;
+}
+
+.web-edit-clear-button {
+    background-color: #f44336;
+    color: white;
+}
+
+.web-edit-clear-button:hover {
+    background-color: #d32f2f;
+}
+
+.web-edit-button-group {
+    display: flex;
+    gap: 1rem;
+}
+
+.web-edit-items-list {
+    list-style: disc;
+    padding-left: 1.5rem;
+    color: #444;
+}

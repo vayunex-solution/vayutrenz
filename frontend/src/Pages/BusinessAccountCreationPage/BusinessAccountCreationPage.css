@@ -1,0 +1,158 @@
+.business-account-page-container {
+  max-width: 700px;
+  margin: auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  font-family: "Segoe UI", sans-serif;
+}
+
+
+.business-account-page-container h2 {
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-size: 24px;
+  color: #333;
+}
+
+.business-account-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.business-account-form label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+  color: #555;
+}
+
+.business-account-form input,
+.business-account-form textarea,
+.business-account-form select {
+  padding: 0.6rem;
+  border: 1px solid #2e2e2e;
+  border-radius: 6px;
+  margin-top: 0.4rem;
+  font-size: 18px;
+  background-color: white;
+  color: black;
+}
+
+.business-account-form textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.business-account-submit-btn {
+  background-color: #007bff;
+  color: white;
+  padding: 0.7rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.business-account-submit-btn:hover {
+  background-color: #0056b3;
+}
+
+.business-account-category-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.business-account-category-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.business-account-category-chip {
+  background-color: #f0f0f0;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.business-account-category-chip button {
+  background: none;
+  border: none;
+  color: red;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.business-account-category-add {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.business-account-category-add input {
+  flex: 1;
+  background-color: white;
+}
+
+/* ///// */
+.business-account-image-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.business-account-logo-image-container,
+.business-account-banner-image-container {
+  background-color: lightgray;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.business-account-logo-image-container {
+  width: 200px;
+}
+
+.business-account-banner-image-container {
+  width: 100%;
+}
+
+.business-account-logo-image,
+.business-account-banner-image {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+.business-account-placeholder {
+  color: #777;
+  font-size: 18px;
+}
+
+
+
+/* Responsive Design */
+@media screen and (max-width: 500px) {
+  .business-account-page-container{
+    padding: 10px;
+  }
+  
+  .business-account-logo-image-container,
+  .business-account-banner-image-container {
+    height: 150px;
+  }
+  .business-account-logo-image-container{
+    width: 150px;
+  }
+}
+

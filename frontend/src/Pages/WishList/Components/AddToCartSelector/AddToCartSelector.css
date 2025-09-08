@@ -1,0 +1,123 @@
+.add-to-cart-background-hider {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(152, 152, 152, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.add-to-cart-selector-container {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+  position: relative;
+}
+
+.add-to-cart-selector-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.add-to-cart-close-icon {
+  cursor: pointer;
+}
+
+.add-to-cart-size-options {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+
+.add-to-cart-size-btn {
+  border: 1.5px solid #908e8e;
+  padding: 8px 14px;
+  border-radius: 6px;
+  background: white;
+  color: black;
+  position: relative;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.add-to-cart-size-btn.add-to-cart-low-stock {
+  border: 1.5px solid rgb(255, 141, 141);
+}
+
+.add-to-cart-size-btn.add-to-cart-selected {
+  border: 2px solid black;
+  background-color: rgb(255, 210, 50);
+}
+
+.add-to-cart-size-btn.add-to-cart-disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.add-to-cart-low-stock-text {
+  position: absolute;
+  color: rgb(253, 62, 62);
+  font-size: 11px;
+  bottom: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.add-to-cart-color-options {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  justify-content: flex-start;
+}
+
+.add-to-cart-color-outer {
+  width: 36px;
+  height: 36px;
+  margin: 3px;
+  border-radius: 50%;
+  border: 0.5px solid gray;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.add-to-cart-color-selected {
+  border: 2px solid black;
+  background-color: rgb(255, 210, 50);
+}
+
+.add-to-cart-color-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+.add-to-cart-confirm-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  background: #e3e3e3;
+  color: #666;
+  border: none;
+  font-weight: bold;
+  cursor: not-allowed;
+  border: solid #666 1px;
+}
+
+.add-to-cart-confirm-btn.add-to-cart-enabled {
+  background: rgb(255, 210, 50);
+  border: solid black 1px;
+  color: black;
+  cursor: pointer;
+}

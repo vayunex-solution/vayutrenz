@@ -1,0 +1,182 @@
+.web-edit-page-outer-div {
+    background-color: transparent;
+}
+
+.web-edit-page-inner-div {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    border: solid #ccc 1px;
+}
+
+.web-edit-page-heading {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+.web-edit-page-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 30px;
+}
+
+.web-edit-page-label {
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.web-edit-page-input {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    width: 95%;
+    background-color: white;
+    color: black;
+}
+
+.web-edit-page-submit-btn {
+    background-color: green;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+}
+
+.web-edit-page-preview {
+    margin-top: 20px;
+}
+
+.web-edit-page-main-heading {
+    margin-bottom: 24px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 12px;
+    background-color: #fff;
+}
+
+.web-edit-page-main-heading-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.web-edit-page-subheadings {
+    margin-top: 10px;
+}
+
+.web-edit-page-subheading {
+    background-color: #fafafa;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    margin-top: 8px;
+}
+
+.web-edit-page-subheading-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.web-edit-page-remove-btn {
+    background-color: darkred;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    padding: 2px 8px;
+    cursor: pointer;
+    aspect-ratio: 1/1;
+    width: fit-content;
+    height: fit-content;
+}
+
+.web-edit-page-add-detail-btn {
+    background-color: darkorange;
+    color: black;
+    border: none;
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    margin-top: -4px;
+    width: 100%;
+    cursor: pointer;
+}
+
+.web-edit-page-details-preview {
+    list-style-type: disc;
+    margin: 8px 0 16px 20px;
+    padding-left: 0;
+    color: #333;
+}
+
+
+
+/* Form background */
+/* Submit Button */
+.address-form .web-edit-page-submit-btn {
+    background-color: green;
+    color: white;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* ContactLine Preview Section */
+.address-form .web-edit-page-contact-line {
+    background-color: white;
+    color: black;
+    padding: 8px 12px;
+    margin: 6px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    /* position: relative; */
+}
+
+/* Remove Button for ContactLine */
+.address-form .web-edit-page-remove-btn {
+    /* position: absolute; */
+    top: 4px;
+    right: 8px;
+    background: transparent;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: red;
+}
+
+/* B tag inside preview */
+.address-form .web-edit-page-contact-line b {
+    font-weight: bold;
+}
+
+.address-form .web-edit-page-subheading {
+    margin-bottom: 0;
+    border-bottom: none;
+}
+
+.address-form .web-edit-page-p {
+    margin: 0;
+    padding: 0;
+}
+
+.address-preview{
+    margin-bottom: 20px;
+    margin-top: 0px;
+}
+
+.about-us-Submit-button-clicked .web-edit-page-submit-btn{
+    background-color: black;
+}

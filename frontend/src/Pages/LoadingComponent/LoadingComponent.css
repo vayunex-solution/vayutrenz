@@ -1,0 +1,25 @@
+.loading-component-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(230, 230, 230, 0.9);
+    /* 90% opacity white */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.loading-component-image {
+    height: 100px;
+    transition: opacity 0.2s ease-in-out;
+    opacity: 1;
+}
+
+@media (max-width:500px) {
+    .loading-component-image{
+        height: 70px;
+    }
+}

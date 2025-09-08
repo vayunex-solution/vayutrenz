@@ -1,0 +1,133 @@
+
+.home-edit-outer-div * {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
+}
+.home-edit-outer-div {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-top: 20px;
+}
+
+.home-edit-form {
+    max-width: 900px;
+    margin: auto;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    border: solid #ccc 1px;
+    width: 90%;
+}
+@media (max-width:700px) {
+    .home-edit-form{
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+}
+.home-edit-form .home-edit-sub-heading{
+    margin-bottom: 0px;
+    margin-top: 40px;
+    padding-top: 10px;
+    border-radius: 8px;
+    border-top: solid #444444 1px;
+}
+.home-edit-form label{
+    display: flex;
+    flex-direction: column;
+}
+
+.home-edit-title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.home-edit-input {
+    padding: 8px;
+    font-size: 16px;
+    background-color: white;
+    color: black;
+}
+
+.home-edit-category-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.home-edit-category-buttons button {
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.home-edit-submit-row {
+    display: flex;
+    margin-top: 24px;
+}
+
+.home-edit-submit-button {
+    flex: 1;
+    padding: 10px;
+    font-size: 18px;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.home-edit-preview ul {
+    margin-top: 10px;
+    list-style: disc;
+    padding-left: 20px;
+}
+
+.home-edit-preview button {
+    margin-left: 8px;
+    background: red;
+    border: none;
+    color: white;
+    padding: 2px 6px;
+    cursor: pointer;
+}
+
+.home-edit-form .home-edit-page-buttons-div{
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    /* flex: 1; */
+}
+.home-edit-form .home-edit-page-buttons-div p{
+    margin-bottom: 0px;
+}
+.home-edit-form .home-edit-page-buttons{
+    background-color: rgb(0, 0, 255);
+    /* color: black; */
+}
+.home-edit-form .home-edit-page-buttons.active{
+    border: solid black 2px;
+}
+.home-edit-form .home-edit-page-buttons.inactive{
+    background-color: #ccc;
+    border: solid #908f8f 2px;
+}
+
+.home-edit-form .home-edit-toggle{
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 0px;
+    
+}
+.home-edit-form .home-edit-toggle button{
+    flex: 1;
+    border-radius: 0;
+}
+

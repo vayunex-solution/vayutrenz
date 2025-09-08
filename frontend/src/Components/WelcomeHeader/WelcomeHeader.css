@@ -1,0 +1,77 @@
+.welcome-header {
+    position: relative;
+    height: 90vh;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.overlay-text {
+    width: 100%;
+    padding: 2rem;
+    background: linear-gradient(to top, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0));
+    text-align: center;
+}
+
+.text-box {
+    background: rgba(255, 255, 255, 0.85);
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    display: inline-block;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.text-box h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    color: #000;
+}
+
+.text-box p {
+    margin-top: 0.5rem;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+@media screen and (max-width: 768px) {
+    .welcome-header {
+        height: 60vh;
+    }
+    .text-box {
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+    }
+
+    .text-box h1 {
+        font-size: 2rem;
+        color: #000;
+    }
+
+    .text-box p {
+        margin-top: 0.5rem;
+        font-size: 1.2rem;
+        color: #333;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .welcome-header {
+        height: 50vh;
+    }
+    .text-box {
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+    }
+
+    .text-box h1 {
+        font-size: 1.5rem;
+    }
+
+    .text-box p {
+        margin-top: 0.5rem;
+        font-size: 1rem;
+    }
+}

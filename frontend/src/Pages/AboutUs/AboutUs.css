@@ -1,0 +1,174 @@
+
+.about-us-outer-div {
+  width: 100%;
+  background-color: #f9f9f9;
+}
+.about-us-outer-div * {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
+}
+
+.about-us-inner-div {
+    flex: 1;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    
+}
+.about-us-middle-container,.about-us-container{
+  max-width: 1200px;
+  margin: auto;
+}
+
+.about-us-main-heading {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  position: relative;
+  display: inline-block;
+}
+
+.about-us-main-heading::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 4px;
+  background-color: #fdd835; /* yellow highlight */
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+}
+
+.about-us-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-top: 1.5rem;
+}
+
+.about-us-left img {
+  width: 200px;
+}
+
+.about-us-right {
+  flex: 1;
+}
+
+.about-us-sub-heading {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.about-us-paragraph {
+  font-size: 1.2rem;
+  font-weight: 400;
+  line-height: 1.7;
+  white-space: pre-line;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .about-us-bottom {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .about-us-left img {
+    margin-bottom: 1rem;
+  }
+
+  .about-us-right {
+    padding: 0;
+  }
+}
+
+.about-us-container{
+    padding: 2rem 1rem;
+}
+
+.about-banner {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin: 2rem 0;
+}
+
+.main-heading {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #222;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.sub-heading {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #444;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.about-details {
+  font-size: 1rem;
+  color: #333;
+  text-align: center;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+  padding: 0 1rem;
+}
+
+.about-footer {
+  background-color:rgb(253 214 52);
+  padding: 2rem;
+  border-radius: 10px;
+  flex: 1;
+  flex-wrap: wrap;
+}
+
+.about-footer-top {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.footer-company-details {
+  color: #333;
+  font-size: 1rem;
+  line-height: 1.6;
+  padding: 0 1rem;
+}
+
+.about-footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.footer-section {
+  flex: 1 1 30%;
+  text-align: center;
+}
+
+.footer-section p {
+  font-size: 0.95rem;
+  color: #444;
+  line-height: 1.5;
+}
+
+
+@media (max-width:700) {
+    .about-us-bottom{
+        flex-direction: column;
+    }
+    .about-footer-bottom{
+        display: block;
+    }
+}
+

@@ -1,0 +1,97 @@
+.my-wallet-container {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+    font-family: sans-serif;
+    color: #333;
+}
+
+.my-wallet-balance {
+    background-color: #d8f0cb;
+    padding: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    border-radius: 4px;
+}
+
+.my-wallet-balance-subtext {
+    font-size: 14px;
+    font-weight: normal;
+    margin-top: 5px;
+}
+
+.my-wallet-details {
+    margin: 20px 0;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+}
+
+.my-wallet-card {
+    padding: 20px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.my-wallet-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.my-wallet-icon {
+    font-size: 18px;
+}
+
+.my-wallet-balance-text {
+    color: #009d63;
+    font-weight: bold;
+}
+
+.my-wallet-description {
+    font-size: 14px;
+    color: #666;
+}
+
+.my-wallet-info-links {
+    margin: 20px 0;
+    border: 1px solid #eee;
+    border-radius: 5px;
+}
+
+.my-wallet-link {
+    padding: 12px 16px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+.my-wallet-link:last-child {
+    border-bottom: none;
+}
+
+.my-wallet-benefits h3 {
+    margin-top: 30px;
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+.my-wallet-benefit-icons {
+    display: flex;
+    gap: 40px;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.my-wallet-benefit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 14px;
+    color: #444;
+    text-align: center;
+}
+
+.my-wallet-benefit-icon {
+    font-size: 28px;
+    margin-bottom: 6px;
+}

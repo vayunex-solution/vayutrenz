@@ -1,0 +1,39 @@
+.privacy-policy-page-container {
+    max-width: 900px;
+    margin: auto;
+    padding: 40px 20px;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #222;
+}
+
+.privacy-policy-page-heading {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.privacy-policy-page-subheading {
+    font-size: 24px;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: #333;
+}
+
+.privacy-policy-page-paragraph {
+    margin-bottom: 16px;
+    font-size: 16px;
+}
+
+.privacy-policy-page-points {
+    padding-left: 20px;
+    margin-top: 10px;
+}
+
+.privacy-policy-page-point {
+    margin-bottom: 10px;
+    list-style-type: disc;
+    font-size: 16px;
+}

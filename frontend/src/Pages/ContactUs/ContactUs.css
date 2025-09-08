@@ -1,0 +1,273 @@
+.contact-us-main-container {
+    width: 100%;
+}
+
+.contact-us-outer-box {
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+}
+
+.contact-us-inner-box {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.contact-us-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    padding-bottom: 30px;
+    background-color: #f5f5f5cf;
+}
+
+.contact-us-left {
+    flex: 1;
+}
+
+.contact-us-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #000;
+    position: relative;
+}
+
+.contact-us-underline {
+    display: block;
+    width: 50px;
+    height: 4px;
+    background-color: #fcd900;
+    margin-top: 4px;
+}
+
+.contact-us-subtitle {
+    font-size: 16px;
+    margin:  16px 0;
+    color: #333;
+}
+
+.contact-us-search-container {
+    display: flex;
+    align-items: center;
+    border: 1px solid #000;
+    border-radius: 999px;
+    padding: 10px 20px;
+    max-width: 400px;
+}
+
+.contact-us-search-icon {
+    color: #000;
+}
+
+.contact-us-send-icon {
+    color: #fcd900;
+    transform: rotate(15deg);
+}
+
+
+.contact-us-search-input {
+    border: none;
+    outline: none;
+    background: transparent;
+    flex: 1;
+    color: #000;
+    font-size: 14px;
+}
+
+.contact-us-search-input::placeholder {
+    color: #aaa;
+}
+
+.contact-us-right {
+    flex: 1;
+    max-width: 30%;
+    display: flex;
+    justify-content: center;
+}
+
+.contact-us-image {
+    max-width: 250px;
+    height: auto;
+}
+
+/* // helping details // */
+.contact-us-helping-details {
+    display: flex;
+    gap: 30px;
+    margin-top: 60px;
+    padding-bottom: 10px;
+    border-bottom: solid #c0c0c0 1px;
+}
+
+.contact-us-sidebar {
+    width: 240px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background-color: #f5f5f5cf;
+}
+
+.contact-us-main-heading {
+    padding: 10px 0 10px 10px;
+    cursor: pointer;
+    font-size: 18px;
+    color: #333;
+    border-left: 3px solid transparent;
+    transition: all 0.2s;
+}
+
+.contact-us-main-heading.active {
+    font-weight: bold;
+    color: #000;
+    font-size: 20px;
+    border-left: 3px solid #fcd900;
+}
+
+.contact-us-my-orders {
+    margin-top: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.contact-us-content {
+    flex: 1;
+}
+
+.contact-us-content-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    position: relative;
+}
+
+.contact-us-content-title::after {
+    content: "";
+    display: block;
+    width: 50px;
+    height: 3px;
+    background-color: #fcd900;
+    margin-top: 5px;
+}
+
+.contact-us-faq-label,
+.contact-us-related-label {
+    color: #aaa;
+    margin: 20px 0 5px;
+}
+
+.contact-us-question {
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 20px;
+}
+
+.contact-us-subsection {
+    margin-bottom: 15px;
+}
+
+.contact-us-subtitle {
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 300px;
+    color: #000;
+}
+.contact-us-helping-details .contact-us-subtitle{
+    margin: 0;
+}
+
+.contact-us-sub-details {
+    margin-top: 5px;
+    margin-left: 10px;
+    padding-left: 15px;
+    font-size: 17px;
+    border-left: 2px solid #eee;
+    list-style: disc;
+    color: #555;
+}
+
+.contact-us-address-details {
+    margin-top: 60px;
+    padding: 20px;
+    background-color: #f5f5f5a8;
+}
+
+.contact-us-address-heading {
+    font-weight: bold;
+    font-size: 16px;
+    color: #111;
+}
+
+.contact-us-address-underline {
+    width: 40px;
+    height: 3px;
+    background-color: #fcd900;
+    margin: 4px 0 12px 0;
+}
+
+.contact-us-address-line {
+    color: #222;
+    margin: 4px;
+    font-size: 17px;
+}
+
+
+.contact-us-contact-line-container {
+    margin-top: 16px;
+}
+.contact-us-contact-line {
+    margin: 0px;
+    font-size: 17px;
+    color: #333;
+}
+
+.contact-us-highlight {
+    font-weight: bold;
+    color: #000;
+}
+
+/* // responsive // */
+@media screen and (max-width: 550px) {
+    .contact-us-header,
+    .contact-us-helping-details {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .contact-us-right {
+        margin-top: 20px;
+        justify-content: flex-start;
+    }
+
+    .contact-us-helping-details {
+        gap: 20px;
+    }
+
+    .contact-us-sidebar {
+        width: 100%;
+    }
+
+    .contact-us-content {
+        width: 100%;
+    }
+
+    .contact-us-subtitle {
+        width: 100%;
+    }
+
+    .contact-us-content-title {
+        font-size: 18px;
+    }
+
+    .contact-us-search-container {
+        width: 100%;
+        max-width: unset;
+    }
+}
+

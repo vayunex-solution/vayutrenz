@@ -1,0 +1,134 @@
+.footer-container {
+    background-color: #111;
+    color: #fff;
+    padding: 2rem;
+    font-family: Arial, sans-serif;
+}
+
+.footer-top {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: space-between;
+}
+
+.footer-block {
+    flex: 1 1 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.footer-block h4 {
+    color: #ffc107;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.footer-block a,
+.footer-section a {
+    color: #ccc;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.footer-block a:hover,
+.footer-section a:hover {
+    color: #fff;
+}
+
+.subscribe-box {
+    display: flex;
+    gap: 0.5rem;
+    margin: 0.5rem 0;
+}
+
+.subscribe-box input {
+    flex: 1;
+    padding: 0.4rem;
+    border: none;
+    border-radius: 4px;
+}
+
+.subscribe-box button {
+    background-color: #ffc107;
+    border: none;
+    padding: 0.4rem 1rem;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 4px;
+}
+
+.app-buttons img {
+    width: 120px;
+    margin: 0.5rem 0.25rem;
+}
+
+.payment-icons img {
+    width: 32px;
+    margin: 0.25rem;
+}
+
+/* Bottom Footer */
+.footer-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 2rem;
+    gap: 2rem;
+}
+
+.footer-section {
+    flex: 1 1 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.footer-section h4 {
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+
+.external-links {
+    text-align: right;
+}
+
+/* Responsive Design */
+@media (max-width: 1000px) {
+
+    .footer-top,
+    .footer-bottom {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .footer-block,
+    .footer-section {
+        flex: 1 1 45%;
+    }
+}
+
+@media (max-width: 500px) {
+    
+    .footer-block,
+    .footer-section {
+        flex: 1 1 100%;
+    }
+    
+    .external-links {
+        text-align: left;
+        margin-top: 1rem;
+    }
+}
+@media (max-width: 350px) {
+    .subscribe-box{
+        flex-direction: column;
+        justify-content: center;
+    }
+    .subscribe-box button{
+        width: fit-content;
+        margin: auto;
+    }
+}

@@ -1,0 +1,87 @@
+.about-us-edit-outer-div * {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
+}
+.about-us-edit-outer-div {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-top: 20px;
+}
+
+.about-us-edit-inner-div {
+    background-color: #f4f4f4;
+    padding: 1.5rem;
+    border: solid #ccc 1px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.about-us-edit-inner-div input,
+.about-us-edit-inner-div textarea {
+    background-color: white;
+    color: black;
+    padding: 0.6rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.about-us-edit-inner-div button {
+    padding: 0.6rem 1.2rem;
+    /* background-color: green; */
+    color: white;
+    border: none;
+    cursor: pointer;
+    width: fit-content;
+    align-self: flex-start;
+    border-radius: 4px;
+}
+
+.about-us-edit-inner-div button:hover {
+    opacity: 0.9;
+}
+
+.about-us-edit-outer-div .preview-section {
+  margin-top: 1rem;
+  background: #f7f7f7;
+  padding: 1rem;
+  border-radius: 8px;
+}
+.about-us-edit-outer-div .preview-item {
+  display: flex;
+  justify-content: space-between;
+  border-top: #ccc solid 1px;
+  margin-bottom: 1rem;
+  padding-right: 2rem;
+}
+.about-us-edit-outer-div .delete-button {
+  
+  background: red;
+  color: white;
+  border: none;
+  padding: 2px 8px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.about-us-preview-item{
+    display: flex;
+    justify-content: space-between;
+}
+
+.about-us-Submit-button-div{
+    display: flex;
+}
+
+.about-us-edit-inner-div  .about-us-Submit-button{
+    background-color: green;
+    width: auto;
+    flex:1;
+}
+
+.about-us-Submit-button-clicked .about-us-Submit-button{
+    background-color: black;
+}

@@ -1,0 +1,41 @@
+
+
+/* Back to top button */
+.back-to-top {
+    position: fixed;
+    bottom: 40px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.7);
+    border: solid 1px #808080;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    color: rgb(16, 15, 15);
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    z-index: 1000;
+    opacity: 0.85;
+    transition: background 0.3s;
+}
+
+.back-to-top:hover {
+    background-color: #d5d5d5;
+}
+
+.arrow-up {
+    size: 24px;
+    color: #000;
+    font-weight: bold;
+}
+
+@media screen and (max-width: 550px) {
+    .back-to-top{
+        width: 45px;
+        height: 45px;
+    }
+
+}

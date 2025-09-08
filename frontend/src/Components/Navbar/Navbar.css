@@ -1,0 +1,626 @@
+/* navbar.css */
+
+/* navbar  */
+.navbar {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+}
+
+
+/* Top Navbar */
+.top-nav {
+    width: auto;
+    height: 60px;
+    position: sticky;
+    top: 0px;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 20px;
+    border-bottom: 1px solid #e0e0e0;
+    background: white;
+    gap: 5px;
+}
+
+.logo-small {
+    width: fit-content;
+    font-weight: bold;
+    font-size: 24px;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.logo-image {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+}
+
+.logo-image img {
+    width: 100%;
+    height: 100%;
+    /* border-radius: 50%; */
+}
+
+.logo-small .text {
+    margin: 0px;
+    padding: 0px;
+    display: inline-block;
+    margin-left: 2px;
+    font-size: 20px;
+    color: #333;
+}
+
+.logo-full {
+    display: inline-flex;
+    width: 120px;
+    height: 60px;
+    justify-content: center;
+    align-items: center;
+    align-self: self-start;
+    flex-shrink: 0;
+}
+
+.logo-full img {
+    width: 100%;
+    height: 90%;
+    object-fit: contain;
+}
+
+.top-nav-switch-box {
+    width: 33vw !important;
+    display: flex;
+    flex-shrink: 2;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background: white;
+    border-radius: 25px;
+    padding: 5px 5px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+    overflow-x: scroll;
+
+    /* hide scrollbar but allow scrolling */
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* Internet Explorer 10+ */
+}
+
+.top-nav-switch-box::-webkit-scrollbar {
+    /* hide scrollbar but allow scrolling */
+    display: none;
+    /* Chrome, Safari */
+}
+
+.switch-item {
+    display: inline;
+    padding: 10px 10px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.switch-item a {
+    text-decoration: none;
+    color: black;
+    transition: color 0.2s ease;
+}
+
+.switch-item a:hover {
+    color: #ffd500;
+}
+
+/* Optional active style */
+.switch-item.active a {
+    border-bottom: 3px solid #ffd500;
+}
+
+
+
+
+.top-nav-right {
+    margin: 0px;
+    padding: 0px;
+    width: auto;
+    min-width: 40vw;
+    display: flex;
+    gap: 5px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.search-bar-container {
+    width: 30vw;
+    max-width: 600px;
+    /* 2/3 of the window width */
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: solid 1px #ccc;
+    border-radius: 8px;
+}
+
+.search-box {
+    background-color: #f2f2f2;
+    /* light gray background */
+    display: flex;
+    align-items: center;
+    padding: 5px 16px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+}
+
+.search-icon {
+    color: #555;
+    margin-right: 8px;
+    width: 24px;
+}
+
+.search-input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 16px;
+    color: #555;
+    width: 100%;
+}
+
+.search-recommendations {
+    display: none;
+    /* Hidden by default */
+}
+
+.search-recommendations.active {
+    position: absolute;
+    top: 49px;
+    /* Adjust based on the height of the navbar */
+    width: 30vw;
+    /* Adjust width to match search bar */
+    min-width: 20vw;
+    display: flex;
+    justify-content: start;
+    background: white;
+    border: solid 1px #ccc;
+    border-radius: 0px 0px 8px 8px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    /* Ensure it appears above other elements */
+}
+
+.search-recommendations.active .search-recommendations-list {
+    padding: 0px;
+    margin: 0px;
+    width: 100%;
+    display: flex;
+    justify-content: start;
+    flex-direction: column;
+}
+
+.search-recommendations.active .search-recommendation-item {
+    width: 30vw;
+    cursor: pointer;
+    display: flex;
+    background-color: transparent;
+    transition: background-color 0.2s ease;
+    padding: 5px 0px;
+    margin: 0px;
+}
+
+.search-recommendations.active .search-recommendation-item:hover {
+    background-color: #f0f0f0;
+    color: #333;
+    align-self: self-start;
+}
+
+.search-recommendations.active .search-recommendation-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+    margin-left: 18px;
+    color: #808080;
+}
+
+.search-recommendations.active .search-recommendation-text {
+    padding: 0px;
+    margin: 0px;
+    display: flex;
+    font-size: 16px;
+    color: #343434;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+
+.nav-login {
+    padding-left: 5px;
+    font-size: larger;
+}
+
+.top-nav-link {
+    text-decoration: none;
+    color: black;
+}
+
+.top-nav-link .icon {
+    height: 24px;
+    width: 24px;
+    color: #555;
+    flex-shrink: 0;
+}
+.top-nav-image-link{
+    height: 28px;
+    width: 28px;
+    display: flex;
+    border: solid #55555561 1px;
+    border-radius: 50%;
+
+}
+.top-nav-image-link .top-nav-profile-image{
+    /* flex: 1; */
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    text-align: center;
+    object-fit: cover;
+}
+
+.icon {
+    cursor: pointer;
+}
+
+
+.large-screen-hidden-icon {
+    display: none;
+}
+
+
+/* Bottom Navbar */
+.bottom-nav {
+    width: auto;
+    position: sticky;
+    top: 0px;
+    z-index: 99;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    /* overflow-x: auto; */
+    padding: 0px 20px;
+    background: #fff;
+    /* border-bottom: 1px solid #e0e0e0; */
+    white-space: nowrap;
+}
+
+.bottom-nav-switch-box {
+    display: flex;
+    padding: 5px 10px;
+    height: 40px;
+    width: auto;
+    align-items: center;
+    /* gap: 10px; */
+    background: #f5f5f5;
+    border-radius: 25px;
+}
+
+.bottom-nav-switch-box .button {
+    padding: 10px 20px;
+    width: 100px;
+    position: relative;
+    z-index: 10;
+    border: none;
+    outline: none;
+    /* margin-right: 5px; */
+    border-radius: 25px;
+    background-color: transparent;
+    font-weight: bold;
+    color: #555;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.bottom-nav-switch-box .button.active {
+    background-color: #ffd500;
+}
+
+.bottom-nav-switch-box .button :hover {
+    color: #ffd500;
+}
+
+
+.bottom-links {
+    width: full;
+    justify-content: space-evenly;
+    gap: 50px;
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+
+    /*hide scrollbar but allow scrolling */
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* Internet Explorer 10+ */
+}
+
+.bottom-links::-webkit-scrollbar {
+    /* hide scrollbar but allow scrolling */
+    display: none;
+    /* Chrome, Safari */
+}
+
+.bottom-links .bottom-link-items {
+    padding: 20px 0;
+    display: inline-flex;
+    white-space: nowrap;
+    text-decoration: none;
+    color: black;
+    font-weight: 500;
+}
+
+.bottom-nav .menu-icon {
+    height: 24px;
+    width: 24px;
+    display: none;
+    position: absolute;
+    color: rgb(72, 72, 255);
+    top: 7px;
+    right: 5px;
+}
+
+
+/* breadcrumb */
+.breadcrumb-container {
+    width: 100vw;
+    height: fit-content;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    /* justify-content: center;
+    text-align: center; */
+}
+
+.breadcrumb {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    font-size: 0.9rem;
+    margin: 15px;
+    color: #333;
+    gap: 6px;
+}
+
+@media (min-width: 1700px) {
+    .breadcrumb {
+        margin: 15px auto;
+    }
+}
+
+@media (min-width:2050px) {
+    .top-nav-right {
+        min-width: 840px;
+        max-width: 900px;
+    }
+}
+
+.breadcrumb .breadcrumb-item {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.breadcrumb a {
+    color: black;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.breadcrumb .current {
+    color: #aaa;
+    font-weight: 400;
+}
+
+.breadcrumb-icon {
+    width: 16px;
+    height: 16px;
+    stroke: #888;
+    flex-shrink: 0;
+    align-self: center;
+}
+
+
+
+
+/* Responsive */
+@media (max-width: 768px) {
+    .top-nav {
+        padding: 0px 10px;
+    }
+
+    .logo .text {
+        display: none;
+    }
+
+    .search-bar-container {
+        display: flex;
+        flex-shrink: 0;
+        width: fit-content;
+    }
+
+    .search-box {
+        padding: 5px 5px;
+    }
+
+
+    .search-recommendations.active {
+        width: 240px;
+        /* Adjust width to match search bar */
+        min-width: 30vw;
+    }
+
+    .search-recommendations.active .search-recommendation-item {
+        width: 100%;
+        /* Adjust width to match search bar */
+    }
+
+    .search-recommendations.active .search-recommendation-icon {
+        height: 20px;
+        width: 20px;
+        margin-left: 10px;
+    }
+
+    .search-recommendations.active .search-recommendation-text {
+        font-size: 14px;
+    }
+
+    .nav-login {
+        font-size: medium;
+    }
+
+    .top-nav-link .icon {
+        margin: 0px;
+        margin-left: 5px;
+        width: 20px;
+    }
+    .top-nav-image-link{
+        height: 26px;
+        width: 26px;
+    }
+
+    .nav-links {
+        display: none;
+    }
+
+    .bottom-nav .menu-icon {
+        display: block;
+    }
+
+    /* ////////// */
+
+    .bottom-nav-switch-box {
+        display: inline-block;
+        justify-self: center;
+    }
+
+    .bottom-nav {
+        padding: 5px 0px;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        flex-wrap: wrap;
+        width: 100%;
+        /* margin-top: 10px; */
+        align-items: center;
+        position: sticky;
+        top: 50px;
+        /* Adjust based on the height of the top navbar */
+        gap: 0px;
+    }
+
+    /* //////////// */
+
+    .search-login input {
+        display: none;
+    }
+
+
+    .bottom-links {
+        display: none;
+        margin-top: 10px;
+    }
+
+    .bottom-links.open {
+        width: full;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        justify-content: center;
+        gap: 0px;
+    }
+
+    .bottom-links-box {
+        padding-left: 50px;
+        padding-right: 50px;
+        display: inline;
+        justify-content: start;
+    }
+
+    .bottom-links .bottom-link-items {
+        display: inline-block;
+        padding: 5px 0px;
+        width: 40%;
+        gap: 0px;
+    }
+
+    .nav-background-hider.active {
+        display: block;
+        z-index: 50;
+        position: fixed;
+        width: 100vw;
+        height: 100vh;
+        top: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+}
+
+@media (max-width: 500px) {
+    .small-screen-hidden-icon {
+        display: none;
+    }
+
+    .large-screen-hidden-icon {
+        display: inline-block;
+    }
+
+    .search-hidden {
+        display: none;
+    }
+
+    .search-bar-container.active {
+        width: 60vw;
+    }
+
+    .search-recommendations.active {
+        width: 60vw;
+        /* Adjust width to match search bar */
+        min-width: 50vw;
+        top: 45px;
+    }
+    .search-recommendations.active .search-recommendations-list{
+        width: 60vw;
+    }
+
+    .top-nav {
+        padding: 0px 5px;
+        height: 50px;
+    }
+
+    .logo-full {
+        height: 50px;
+    }
+
+    .bottom-nav-switch-box {
+        height: 30px;
+        padding: 10px 10px;
+
+    }
+
+    .bottom-nav-switch-box .button {
+        width: 70px;
+        padding: 9px 10px;
+        font-size: 10px;
+    }
+
+    .bottom-links.open {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+    }
+
+}

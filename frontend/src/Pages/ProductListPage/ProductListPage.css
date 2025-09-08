@@ -1,0 +1,79 @@
+.product-list-heading-container {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  position: relative;
+  background-color: white;
+}
+
+.product-list-term {
+  text-transform: capitalize;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.product-list-item-count {
+  font-size: 1.2rem;
+  color: #36383c;
+  font-weight: 400;
+  margin-left: 8px;
+}
+
+.product-collection-container {
+  flex: 1;
+}
+
+/* Product card grid layout */
+.product-list-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  padding: 1rem;
+}
+
+.product-list-item .p-l-card-bottom {
+  width: 100%;
+  display: flex;
+  gap: 2px;
+}
+
+.product-list-item .p-l-card-bottom .p-l-button {
+  height: 40px;
+  padding: 0px;
+  margin: 4px 0px 12px 0px;
+  border-radius: 0px;
+  background-color: transparent;
+  color: black;
+  flex: 1;
+  border: solid rgba(0, 0, 0, 0.672) 1px;
+}
+.product-card-box{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+/* 4-column layout on large screens */
+@media (min-width: 1000px) {
+  .product-list-container.product-list-item {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  /* .product-card-box{ */
+    /* max-width: 23.55vw; */
+    /* overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap; */
+  /* } */
+}
+
+/* 2-column layout on small screens */
+@media (max-width: 800px) {
+  .product-list-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1vw;
+    padding: 0.5vw;
+  }
+  /* .product-card-box {
+    width: 48vw;
+  } */
+}

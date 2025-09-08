@@ -1,0 +1,198 @@
+.create-category-form-container {
+    /* background-color: #f4f4f4; */
+    color: black;
+    padding: 15px;
+    border-radius: 8px;
+    max-width: 800px;
+    margin: auto;
+    /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
+}
+
+
+.create-category-form-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.create-category-form-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background-color: #f4f4f4;
+  padding: 20px;
+  border-radius: 8px;
+  border: solid 1px #ccc;
+}
+
+.create-category-form-li{
+  cursor: pointer;
+}
+
+.create-category-form-edit-delete-button{
+  border: solid black 1px;
+  padding: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  background-color: rgba(127, 255, 212, 0.396);
+}
+.create-category-form-edit-delete-button p{
+  color: black;
+  
+}
+.create-category-form-edit-delete-button b{
+  color: blue;
+  font-size: 25px;
+}
+.create-category-form-button-container{
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+}
+.create-category-form-button-container button{
+  flex: 1;
+}
+.create-category-form-edit-delete-button .create-category-form-edit-button{
+  background-color: rgb(46, 46, 251);
+  color: black;
+  font-size: 20px;
+}
+.create-category-form-edit-delete-button .create-category-form-delete-button{
+  background-color: rgb(251, 36, 36);
+  color: black;
+  font-size: 20px;
+}
+.create-category-form-button{
+  background-color: green;
+}
+.create-category-form-cancel-button{
+  background-color: blue;
+}
+
+@media (max-width:500px) {
+  .create-category-form-form{
+    padding: 5px;
+  }
+}
+
+
+
+.create-category-form label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+}
+
+.create-category-form input,
+.create-category-form textarea,
+.create-category-form select {
+  padding: 8px;
+  border: solid black 1px;
+  background-color: white;
+  color: black;
+  font-size: 16px;
+  margin-top: 4px;
+  flex: 1;
+  width: max-content;
+  box-sizing: border-box;
+}
+
+.create-category-form-checkbox {
+  width: auto;
+  margin: 0;
+  padding: 0;
+  height: 30px;
+  position: relative;
+  top: 10px;
+  right: 5px;
+}
+
+.create-category-form-gender{
+  display: flex;
+  gap: 20px;
+}
+
+.create-category-form-submit {
+  background-color: black;
+  color: white;
+  padding: 10px 16px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  width: fit-content;
+  align-self: flex-end;
+}
+
+.create-category-form-submit:hover {
+  background-color: #333;
+}
+
+.create-category-form-heading {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 24px 0 12px;
+  border-bottom: 2px solid black;
+  padding-bottom: 4px;
+}
+
+.create-category-form-list {
+  display: flex;
+  /* flex-direction: row; */
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.create-category-form-list h3{
+  margin: 0;
+  padding: 0;
+}
+.create-category-form-ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  min-width: 60px;
+}
+
+.create-category-form-category-group {
+  border: 1px solid #ccc;
+  padding: 12px;
+  border-radius: 6px;
+  background-color: #f9f9f9;
+}
+
+.create-category-form-category-type-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #222;
+}
+
+.create-category-form-category-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.create-category-form-category-item {
+  padding: 4px 8px;
+  border: 1px solid #888;
+  border-radius: 4px;
+  background-color: white;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.create-category-form-label{
+  display: flex;
+  flex-direction: column;
+}
+.create-category-form-label p{
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+.create-category-form-input-box{
+  /* flex: 1; */
+  height: 30px;
+
+  color: black;
+  background-color: white;
+}
