@@ -1,0 +1,258 @@
+// Prisma Schema for SchoolDost
+// SQLite for dev, MySQL for production (see .env.production)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// ============ USER & AUTH ============
+
+model User {
+  id              String    @id @default(uuid())
+  email           String    @unique
+  password        String?
+  fullName        String
+  username        String    @unique
+  avatarUrl       String?
+  coverUrl        String?
+  bio             String?
+  college         String?
+  department      String?
+  batch           String?
+  graduationYear  Int?
+  phone           String?
+  location        String?
+  isVerified      Boolean   @default(false)
+  isOnline        Boolean   @default(false)
+  lastSeen        DateTime?
+  
+  // OAuth & Email Verification
+  googleId          String?   @unique
+  emailVerified     Boolean   @default(false)
+  verificationToken String?
+  tokenExpiry       DateTime?
+  resetToken        String?
+  resetTokenExpiry  DateTime?
+  
+  // Admin fields
+  role            String    @default("USER") // USER, MODERATOR, ADMIN
+  isBanned        Boolean   @default(false)
+  banReason       String?
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+
+  // Relations
+  posts           Post[]
+  likes           Like[]
+  comments        Comment[]
+  sentMessages    Message[]       @relation("MessageSender")
+  receivedMessages Message[]      @relation("MessageReceiver")
+  
+  // Matching
+  swipesGiven     Swipe[]         @relation("SwipeFrom")
+  swipesReceived  Swipe[]         @relation("SwipeTo")
+  matchesAsUser1  Match[]         @relation("MatchUser1")
+  matchesAsUser2  Match[]         @relation("MatchUser2")
+  
+  // Follow system
+  followers       Follow[]        @relation("Following")
+  following       Follow[]        @relation("Follower")
+  
+  // Groups
+  groupMemberships GroupMember[]
+  groupMessages   GroupMessage[]
+  
+  // Notifications
+  notifications   Notification[]  @relation("NotificationReceiver")
+  sentNotifications Notification[] @relation("NotificationSender")
+  
+  // Reports
+  reportsMade     Report[]        @relation("ReportedBy")
+  reportsReceived Report[]        @relation("ReportedUser")
+}
+
+// ============ POSTS & FEED ============
+
+model Post {
+  id          String    @id @default(uuid())
+  content     String
+  imageUrl    String?
+  videoUrl    String?
+  batchTag    String?   // e.g., "#BatchOf2025"
+  authorId    String
+  author      User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  likes       Like[]
+  comments    Comment[]
+  reports     Report[]
+}
+
+model Like {
+  id        String   @id @default(uuid())
+  userId    String
+  postId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, postId])
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  content   String
+  userId    String
+  postId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+// ============ FOLLOW SYSTEM ============
+
+model Follow {
+  id          String   @id @default(uuid())
+  followerId  String
+  followingId String
+  follower    User     @relation("Follower", fields: [followerId], references: [id], onDelete: Cascade)
+  following   User     @relation("Following", fields: [followingId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+
+  @@unique([followerId, followingId])
+}
+
+// ============ MATCHING (Tinder-style) ============
+
+model Swipe {
+  id        String    @id @default(uuid())
+  fromId    String
+  toId      String
+  direction String    // "left" or "right"
+  from      User      @relation("SwipeFrom", fields: [fromId], references: [id], onDelete: Cascade)
+  to        User      @relation("SwipeTo", fields: [toId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+
+  @@unique([fromId, toId])
+}
+
+model Match {
+  id        String   @id @default(uuid())
+  user1Id   String
+  user2Id   String
+  user1     User     @relation("MatchUser1", fields: [user1Id], references: [id], onDelete: Cascade)
+  user2     User     @relation("MatchUser2", fields: [user2Id], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([user1Id, user2Id])
+}
+
+// ============ MESSAGING ============
+
+model Message {
+  id         String   @id @default(uuid())
+  content    String
+  senderId   String
+  receiverId String
+  sender     User     @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver   User     @relation("MessageReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+  isRead     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+}
+
+// ============ GROUPS ============
+
+model Group {
+  id          String    @id @default(uuid())
+  name        String
+  description String?
+  imageUrl    String?
+  isPrivate   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  members     GroupMember[]
+  messages    GroupMessage[]
+}
+
+model GroupMember {
+  id        String   @id @default(uuid())
+  userId    String
+  groupId   String
+  role      String   @default("member") // "admin", "member"
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  group     Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, groupId])
+}
+
+model GroupMessage {
+  id        String   @id @default(uuid())
+  content   String
+  senderId  String
+  groupId   String
+  sender    User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  group     Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+// ============ NOTIFICATIONS ============
+
+model Notification {
+  id          String   @id @default(uuid())
+  type        String   // "like", "comment", "follow", "match", "message"
+  message     String?
+  receiverId  String
+  senderId    String?
+  postId      String?
+  isRead      Boolean  @default(false)
+  receiver    User     @relation("NotificationReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+  sender      User?    @relation("NotificationSender", fields: [senderId], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+}
+
+// ============ TRENDING ============
+
+model Hashtag {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  count     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ============ REPORTS ============
+
+model Report {
+  id            String    @id @default(uuid())
+  type          String    // "post", "user", "comment", "message"
+  reason        String    // "spam", "harassment", "inappropriate", "other"
+  description   String?
+  status        String    @default("PENDING") // PENDING, RESOLVED, DISMISSED
+  
+  reporterId    String
+  reporter      User      @relation("ReportedBy", fields: [reporterId], references: [id], onDelete: Cascade)
+  
+  // What is being reported
+  postId        String?
+  post          Post?     @relation(fields: [postId], references: [id], onDelete: SetNull)
+  userId        String?
+  user          User?     @relation("ReportedUser", fields: [userId], references: [id], onDelete: SetNull)
+  
+  // Resolution
+  resolvedAt    DateTime?
+  resolvedBy    String?
+  actionTaken   String?
+  adminNote     String?
+  
+  createdAt     DateTime  @default(now())
+}
