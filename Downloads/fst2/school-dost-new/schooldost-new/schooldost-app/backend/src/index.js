@@ -33,6 +33,10 @@ const setupSocket = require('./socket/socket.handler');
 const app = express();
 const server = http.createServer(app);
 
+// Favicon route (prevent 404)
+app.get('/favicon.ico', (req, res) => res.status(204).end());
+
+
 // Socket.io Setup
 const io = new Server(server, {
   cors: {
@@ -48,9 +52,24 @@ app.use(securityHeaders);
 // HPP - HTTP Parameter Pollution protection
 app.use(hpp);
 
-// CORS
+// CORS - Allow multiple origins
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'https://schooldost.com',
+  'https://www.schooldost.com',
+  'https://api.schooldost.com',
+  process.env.FRONTEND_URL
+].filter(Boolean);
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://localhost:5173",
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(null, true); // Allow all for now
+    }
+  },
   credentials: true
 }));
 
