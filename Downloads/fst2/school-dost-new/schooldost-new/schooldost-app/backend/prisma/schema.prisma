@@ -1,13 +1,13 @@
 // Prisma Schema for SchoolDost
-// SQLite for dev, MySQL for production (see .env.production)
+// MySQL for production (Hostinger)
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 // ============ USER & AUTH ============

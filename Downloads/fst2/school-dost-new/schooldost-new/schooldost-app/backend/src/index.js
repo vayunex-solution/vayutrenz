@@ -33,6 +33,9 @@ const setupSocket = require('./socket/socket.handler');
 const app = express();
 const server = http.createServer(app);
 
+// Trust proxy (required for Hostinger/reverse proxy)
+app.set('trust proxy', 1);
+
 // Favicon route (prevent 404)
 app.get('/favicon.ico', (req, res) => res.status(204).end());
 
