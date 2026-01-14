@@ -7,7 +7,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
+  url      = "mysql://u661602253_schooldost_usr:School2525dost@localhost:3306/u661602253_schooldost_db"
 }
 
 // ============ USER & AUTH ============
