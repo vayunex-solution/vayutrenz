@@ -1,5 +1,6 @@
 // MUST BE FIRST - Load environment variables before anything else
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 
 // Backend Entry Point - SchoolDost API (Secured)
 const express = require('express');
