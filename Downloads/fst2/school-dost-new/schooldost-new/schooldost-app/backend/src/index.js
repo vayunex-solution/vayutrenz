@@ -1,9 +1,11 @@
+// MUST BE FIRST - Load environment variables before anything else
+require('dotenv').config();
+
 // Backend Entry Point - SchoolDost API (Secured)
 const express = require('express');
 const cors = require('cors');
 const http = require('http');
 const { Server } = require('socket.io');
-require('dotenv').config();
 
 // Import Security Middleware
 const {
