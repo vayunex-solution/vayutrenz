@@ -6,6 +6,9 @@ import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
 import CursorGlow from './components/layout/CursorGlow'
 
+// Auth
+import ProtectedRoute from './components/auth/ProtectedRoute'
+
 // Pages
 import Home from './pages/Home'
 import Products from './pages/Products'
@@ -44,25 +47,62 @@ function App() {
       <Navbar />
       <main className="main">
         <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<Products />} />
           <Route path="/collection/*" element={<Products />} />
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/order-success" element={<OrderSuccess />} />
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/verify-otp" element={<VerifyOtp />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/become-seller" element={<SellerRegistration />} />
-          <Route path="/seller/*" element={<SellerDashboard />} />
-          <Route path="/delivery/dashboard" element={<DeliveryDashboard />} />
           <Route path="/track/:orderId" element={<OrderTracking />} />
-          <Route path="/myaccount" element={<Account />} />
-          <Route path="/account/*" element={<Account />} />
-          <Route path="/admin/*" element={<AdminDashboard />} />
+
+          {/* Protected Routes - Require Login */}
+          <Route path="/checkout" element={
+            <ProtectedRoute>
+              <Checkout />
+            </ProtectedRoute>
+          } />
+          <Route path="/order-success" element={
+            <ProtectedRoute>
+              <OrderSuccess />
+            </ProtectedRoute>
+          } />
+          <Route path="/myaccount" element={
+            <ProtectedRoute>
+              <Account />
+            </ProtectedRoute>
+          } />
+          <Route path="/account/*" element={
+            <ProtectedRoute>
+              <Account />
+            </ProtectedRoute>
+          } />
+
+          {/* Seller Routes - Require Seller Role */}
+          <Route path="/seller/*" element={
+            <ProtectedRoute requiredRole="seller">
+              <SellerDashboard />
+            </ProtectedRoute>
+          } />
+
+          {/* Delivery Routes - Require Delivery Role */}
+          <Route path="/delivery/dashboard" element={
+            <ProtectedRoute requiredRole="delivery">
+              <DeliveryDashboard />
+            </ProtectedRoute>
+          } />
+
+          {/* Admin Routes - Require Admin Role */}
+          <Route path="/admin/*" element={
+            <ProtectedRoute requiredRole="admin">
+              <AdminDashboard />
+            </ProtectedRoute>
+          } />
         </Routes>
       </main>
       <Footer />
