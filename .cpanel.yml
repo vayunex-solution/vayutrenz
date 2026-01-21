@@ -1,8 +1,8 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/vayunexs
     # Deploy Backend to api.vayutrenz.vayunexsolution.com
-    - /bin/cp -Rf Ecommerce-project/backend-new/. $DEPLOYPATH/api.vayutrenz.vayunexsolution.com/
+    - /bin/cp -Rf backend-new/. /home/vayunexs/api.vayutrenz.vayunexsolution.com/
     # Deploy Frontend Build to vayutrenz.vayunexsolution.com
-    - /bin/cp -Rf Ecommerce-project/frontend-new/dist/. $DEPLOYPATH/vayutrenz.vayunexsolution.com/
+    - /bin/cp -Rf frontend-new/dist/. /home/vayunexs/vayutrenz.vayunexsolution.com/
+
