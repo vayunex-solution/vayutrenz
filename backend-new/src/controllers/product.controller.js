@@ -115,11 +115,11 @@ export const getFeaturedProducts = async (req, res) => {
     try {
         const { gender = 'all', limit = 10 } = req.query
 
-        let whereClause = 'WHERE is_active = 1 AND is_featured = 1'
+        let whereClause = 'WHERE p.is_active = 1 AND p.is_featured = 1'
         let params = []
 
         if (gender && gender !== 'all') {
-            whereClause += " AND (gender = ? OR gender = 'unisex')"
+            whereClause += " AND (p.gender = ? OR p.gender = 'unisex')"
             params.push(gender)
         }
 
@@ -128,7 +128,7 @@ export const getFeaturedProducts = async (req, res) => {
       FROM products p
       LEFT JOIN categories c ON p.category_id = c.id
       ${whereClause}
-      ORDER BY rating DESC
+      ORDER BY p.rating DESC
       LIMIT ?
     `, [...params, parseInt(limit)])
 
