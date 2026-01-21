@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import axiosInstance from '../../lib/axios'
 import { CheckCircle, XCircle, Store, Clock, MapPin } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 import { useAuthStore } from '../../store/authStore'
@@ -15,7 +15,7 @@ const AdminSellers = () => {
 
     const fetchSellers = async () => {
         try {
-            const res = await axios.get('http://localhost:5001/api/seller/admin', {
+            const res = await axiosInstance.get('/seller/admin', {
                 headers: { Authorization: `Bearer ${token}` }
             })
             if (res.data.success) {
@@ -31,9 +31,7 @@ const AdminSellers = () => {
     const handleStatus = async (id, status) => {
         if (!window.confirm(`Mark this seller as ${status}?`)) return
         try {
-            await axios.put(`http://localhost:5001/api/seller/admin/${id}/status`, { status }, {
-                headers: { Authorization: `Bearer ${token}` }
-            })
+            await axiosInstance.put(`/seller/admin/${id}/status`, { status })
             toast.success(`Seller ${status}`)
             fetchSellers()
         } catch (error) {
@@ -105,3 +103,4 @@ const AdminSellers = () => {
     )
 }
 export default AdminSellers
+

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import axiosInstance from '../../lib/axios'
 import { Upload, X, Loader, FolderPlus } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 import { useAuthStore } from '../../store/authStore'
@@ -22,7 +22,7 @@ const SellerAddProduct = () => {
 
     const fetchCategories = async () => {
         try {
-            const res = await axios.get('http://localhost:5001/api/categories?gender=all')
+            const res = await axiosInstance.get('/categories?gender=all')
             if (res.data.success) setCategories(res.data.categories)
         } catch (error) {
             toast.error('Failed to load categories')
@@ -37,8 +37,8 @@ const SellerAddProduct = () => {
         try {
             const slug = formData.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')
             const payload = { ...formData, slug }
-            
-            await axios.post('http://localhost:5001/api/products', payload, {
+
+            await axiosInstance.post('/products', payload, {
                 headers: { Authorization: `Bearer ${token}` }
             })
             toast.success('Product created successfully!')
@@ -52,7 +52,7 @@ const SellerAddProduct = () => {
 
     return (
         <div className="max-w-4xl mx-auto">
-             <div className="flex items-center gap-3 mb-8">
+            <div className="flex items-center gap-3 mb-8">
                 <div className="bg-indigo-600 text-white p-2 rounded-lg">
                     <FolderPlus size={24} />
                 </div>
@@ -60,14 +60,14 @@ const SellerAddProduct = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 space-y-6">
-                
+
                 {/* Basic Info */}
                 <div className="grid md:grid-cols-2 gap-6">
                     <div className="md:col-span-2">
                         <label className="block text-sm font-medium mb-1">Product Name</label>
                         <input className="glossy-input w-full" name="name" value={formData.name} onChange={handleChange} required />
                     </div>
-                    
+
                     <div>
                         <label className="block text-sm font-medium mb-1">Price (₹)</label>
                         <input type="number" className="glossy-input w-full" name="price" value={formData.price} onChange={handleChange} required />
@@ -86,12 +86,12 @@ const SellerAddProduct = () => {
                     </div>
 
                     <div>
-                         <label className="block text-sm font-medium mb-1">Gender</label>
-                         <select className="glossy-input w-full" name="gender" value={formData.gender} onChange={handleChange}>
+                        <label className="block text-sm font-medium mb-1">Gender</label>
+                        <select className="glossy-input w-full" name="gender" value={formData.gender} onChange={handleChange}>
                             <option value="unisex">Unisex</option>
                             <option value="men">Men</option>
                             <option value="women">Women</option>
-                         </select>
+                        </select>
                     </div>
 
                     <div className="md:col-span-2">
@@ -109,8 +109,8 @@ const SellerAddProduct = () => {
                             <input className="glossy-input w-full" name="primary_image" value={formData.primary_image} onChange={handleChange} placeholder="https://..." required />
                         </div>
                         <div>
-                             <label className="block text-sm font-medium mb-1">Additional Images (comma separated)</label>
-                             <input className="glossy-input w-full" name="images" value={formData.images} onChange={handleChange} placeholder="https://..., https://..." />
+                            <label className="block text-sm font-medium mb-1">Additional Images (comma separated)</label>
+                            <input className="glossy-input w-full" name="images" value={formData.images} onChange={handleChange} placeholder="https://..., https://..." />
                         </div>
                     </div>
                 </div>
@@ -123,3 +123,4 @@ const SellerAddProduct = () => {
     )
 }
 export default SellerAddProduct
+

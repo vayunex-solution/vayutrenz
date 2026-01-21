@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import axiosInstance from '../../lib/axios'
 import { Mail, Trash2, Search, CheckCircle, Clock } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 import { useAuthStore } from '../../store/authStore'
@@ -16,7 +16,7 @@ const AdminInbox = () => {
 
     const fetchMessages = async () => {
         try {
-            const res = await axios.get('http://localhost:5001/api/contact', {
+            const res = await axiosInstance.get('/contact', {
                 headers: { Authorization: `Bearer ${token}` }
             })
             if (res.data.success) {
@@ -32,9 +32,7 @@ const AdminInbox = () => {
     const handleDelete = async (id) => {
         if (!window.confirm('Delete message?')) return
         try {
-            await axios.delete(`http://localhost:5001/api/contact/${id}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            })
+            await axiosInstance.delete(`/contact/${id}`)
             toast.success('Message deleted')
             setMessages(prev => prev.filter(m => m.id !== id))
         } catch (error) {
@@ -102,3 +100,4 @@ const AdminInbox = () => {
     )
 }
 export default AdminInbox
+

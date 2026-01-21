@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import axios from 'axios'
+import axiosInstance from '../lib/axios'
 import { Mail, Phone, MapPin, Send, Loader } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 
@@ -15,7 +15,7 @@ const Contact = () => {
         e.preventDefault()
         setLoading(true)
         try {
-            await axios.post('http://localhost:5001/api/contact', formData)
+            await axiosInstance.post('/contact', formData)
             toast.success('Message sent successfully!')
             setFormData({ name: '', email: '', subject: '', message: '' })
         } catch (error) {
@@ -135,3 +135,4 @@ const Contact = () => {
 }
 
 export default Contact
+

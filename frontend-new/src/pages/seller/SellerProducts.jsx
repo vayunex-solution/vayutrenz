@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import axiosInstance from '../../lib/axios'
 import { Plus, Edit2, Trash2, Package } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 import { useAuthStore } from '../../store/authStore'
@@ -17,13 +17,13 @@ const SellerProducts = () => {
     const fetchData = async () => {
         try {
             // 1. Get Seller ID
-            const profileRes = await axios.get('http://localhost:5001/api/seller/status', {
+            const profileRes = await axiosInstance.get('/seller/status', {
                 headers: { Authorization: `Bearer ${token}` }
             })
             if (profileRes.data.success && profileRes.data.profile) {
                 const sellerId = profileRes.data.profile.id
                 // 2. Get Products
-                const res = await axios.get(`http://localhost:5001/api/products?seller_id=${sellerId}&limit=100`)
+                const res = await axiosInstance.get(`/products?seller_id=${sellerId}&limit=100`)
                 if (res.data.success) {
                     setProducts(res.data.products)
                 }
@@ -38,9 +38,7 @@ const SellerProducts = () => {
     const handleDelete = async (id) => {
         if (!window.confirm('Delete this product?')) return
         try {
-            await axios.delete(`http://localhost:5001/api/products/${id}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            })
+            await axiosInstance.delete(`/products/${id}`)
             toast.success('Product deleted')
             setProducts(prev => prev.filter(p => p.id !== id))
         } catch (error) {
@@ -94,3 +92,4 @@ const SellerProducts = () => {
     )
 }
 export default SellerProducts
+

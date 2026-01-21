@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import axiosInstance from '../../lib/axios'
 import { Edit2, Loader, ArrowLeft } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 import { useAuthStore } from '../../store/authStore'
@@ -25,8 +25,8 @@ const SellerEditProduct = () => {
     const fetchData = async () => {
         try {
             const [catRes, prodRes] = await Promise.all([
-                axios.get('http://localhost:5001/api/categories?gender=all'),
-                axios.get(`http://localhost:5001/api/products/${id}`)
+                axiosInstance.get('/categories?gender=all'),
+                axiosInstance.get(`/products/${id}`)
             ])
 
             if (catRes.data.success) {
@@ -64,9 +64,7 @@ const SellerEditProduct = () => {
             const slug = formData.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')
             const payload = { ...formData, slug }
 
-            await axios.put(`http://localhost:5001/api/products/${id}`, payload, {
-                headers: { Authorization: `Bearer ${token}` }
-            })
+            await axiosInstance.put(`/products/${id}`, payload)
             toast.success('Product updated successfully!')
             navigate('/seller/products')
         } catch (error) {
@@ -157,3 +155,4 @@ const SellerEditProduct = () => {
     )
 }
 export default SellerEditProduct
+

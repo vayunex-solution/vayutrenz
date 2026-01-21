@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import axiosInstance from '../../lib/axios'
 import { Truck, MapPin, CheckCircle, Package, RefreshCw } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 import { useAuthStore } from '../../store/authStore'
@@ -17,7 +17,7 @@ const DeliveryDashboard = () => {
 
     const checkProfile = async () => {
         try {
-            const res = await axios.get('http://localhost:5001/api/delivery/profile', {
+            const res = await axiosInstance.get('/delivery/profile', {
                 headers: { Authorization: `Bearer ${token}` }
             })
             if (res.data.success && res.data.profile) {
@@ -33,7 +33,7 @@ const DeliveryDashboard = () => {
 
     const fetchOrders = async () => {
         try {
-            const res = await axios.get('http://localhost:5001/api/delivery/orders', {
+            const res = await axiosInstance.get('/delivery/orders', {
                 headers: { Authorization: `Bearer ${token}` }
             })
             if (res.data.success) setOrders(res.data.orders)
@@ -45,7 +45,7 @@ const DeliveryDashboard = () => {
     const handleRegister = async (e) => {
         e.preventDefault()
         try {
-            await axios.post('http://localhost:5001/api/delivery/register', registerData, {
+            await axiosInstance.post('/delivery/register', registerData, {
                 headers: { Authorization: `Bearer ${token}` }
             })
             toast.success('Registered successfully')
@@ -57,12 +57,10 @@ const DeliveryDashboard = () => {
 
     const updateStatus = async (orderId, status) => {
         try {
-            await axios.post(`http://localhost:5001/api/delivery/orders/${orderId}/track`, {
+            await axiosInstance.post(`/delivery/orders/${orderId}/track`, {
                 status,
-                location: 'Current Location', // simplified
+                location: 'Current Location',
                 description: `Order is ${status}`
-            }, {
-                headers: { Authorization: `Bearer ${token}` }
             })
             toast.success(`Updated to ${status}`)
             fetchOrders()
@@ -161,3 +159,4 @@ const DeliveryDashboard = () => {
     )
 }
 export default DeliveryDashboard
+

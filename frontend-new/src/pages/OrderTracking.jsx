@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import axiosInstance from '../lib/axios'
 import { useParams } from 'react-router-dom'
 import { Package, MapPin, CheckCircle, Truck, Clock } from 'lucide-react'
 
@@ -16,7 +16,7 @@ const OrderTracking = () => {
 
     const fetchTracking = async () => {
         try {
-            const res = await axios.get(`http://localhost:5001/api/delivery/track/${orderId}`)
+            const res = await axiosInstance.get(`/delivery/track/${orderId}`)
             if (res.data.success) {
                 setTimeline(res.data.timeline)
                 setStatus(res.data.currentStatus)
@@ -43,7 +43,7 @@ const OrderTracking = () => {
 
             <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 relative">
                 <div className="absolute left-10 top-8 bottom-8 w-0.5 bg-gray-200"></div>
-                
+
                 <div className="space-y-8">
                     {timeline.map((event, index) => (
                         <div key={event.id} className="relative flex items-start gap-6">
@@ -60,7 +60,7 @@ const OrderTracking = () => {
                             </div>
                         </div>
                     ))}
-                    
+
                     {timeline.length === 0 && (
                         <div className="text-center text-gray-500">Order placed. Preparing for shipment.</div>
                     )}
@@ -70,3 +70,4 @@ const OrderTracking = () => {
     )
 }
 export default OrderTracking
+

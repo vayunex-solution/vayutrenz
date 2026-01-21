@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import axiosInstance from '../../lib/axios'
 import { Plus, Trash2, Edit2, X, Search, Image as ImageIcon } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 import { useAuthStore } from '../../store/authStore'
@@ -28,7 +28,7 @@ const AdminCategories = () => {
 
     const fetchCategories = async () => {
         try {
-            const res = await axios.get('http://localhost:5001/api/categories?gender=all')
+            const res = await axiosInstance.get('/categories?gender=all')
             if (res.data.success) {
                 setCategories(res.data.categories)
             }
@@ -42,9 +42,7 @@ const AdminCategories = () => {
     const handleDelete = async (id) => {
         if (!window.confirm('Delete this category?')) return
         try {
-            await axios.delete(`http://localhost:5001/api/categories/${id}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            })
+            await axiosInstance.delete(`/categories/${id}`)
             toast.success('Deleted')
             fetchCategories()
         } catch (error) {
@@ -77,12 +75,10 @@ const AdminCategories = () => {
         e.preventDefault()
         try {
             if (currentCat) {
-                await axios.put(`http://localhost:5001/api/categories/${currentCat.id}`, formData, {
-                    headers: { Authorization: `Bearer ${token}` }
-                })
+                await axiosInstance.put(`/categories/${currentCat.id}`, formData)
                 toast.success('Category updated')
             } else {
-                await axios.post('http://localhost:5001/api/categories', formData, {
+                await axiosInstance.post('/categories', formData, {
                     headers: { Authorization: `Bearer ${token}` }
                 })
                 toast.success('Category created')
@@ -149,8 +145,8 @@ const AdminCategories = () => {
                                 <td className="px-6 py-4 text-sm text-gray-500">{cat.slug}</td>
                                 <td className="px-6 py-4">
                                     <span className={`px-2 py-1 text-xs rounded-full ${cat.gender === 'men' ? 'bg-blue-100 text-blue-800' :
-                                            cat.gender === 'women' ? 'bg-pink-100 text-pink-800' :
-                                                'bg-purple-100 text-purple-800'
+                                        cat.gender === 'women' ? 'bg-pink-100 text-pink-800' :
+                                            'bg-purple-100 text-purple-800'
                                         }`}>
                                         {cat.gender.toUpperCase()}
                                     </span>
@@ -240,3 +236,4 @@ const AdminCategories = () => {
     )
 }
 export default AdminCategories
+

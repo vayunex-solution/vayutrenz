@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import axiosInstance from '../../lib/axios'
 import { useAuthStore } from '../../store/authStore'
 import { Package, Calendar, User, MapPin, Clock } from 'lucide-react'
 
@@ -11,7 +11,7 @@ const SellerOrders = () => {
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const res = await axios.get('http://localhost:5001/api/seller/orders', {
+                const res = await axiosInstance.get('/seller/orders', {
                     headers: { Authorization: `Bearer ${token}` }
                 })
                 if (res.data.success) {
@@ -123,3 +123,4 @@ const SellerOrders = () => {
 }
 
 export default SellerOrders
+

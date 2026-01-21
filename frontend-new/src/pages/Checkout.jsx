@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCartStore } from '../store/cartStore'
 import { useAuthStore } from '../store/authStore'
-import axios from 'axios'
+import axiosInstance from '../lib/axios'
 import { toast } from 'react-hot-toast'
 import { MapPin, Plus, Check, Truck, CreditCard, ShieldCheck, Loader } from 'lucide-react'
 
@@ -43,7 +43,7 @@ const Checkout = () => {
 
     const fetchAddresses = async () => {
         try {
-            const res = await axios.get('http://localhost:5001/api/users/addresses', {
+            const res = await axiosInstance.get('/users/addresses', {
                 headers: { Authorization: `Bearer ${token}` }
             })
             if (res.data.success) {
@@ -67,7 +67,7 @@ const Checkout = () => {
 
         try {
             setLoading(true)
-            const res = await axios.post('http://localhost:5001/api/users/addresses', newAddress, {
+            const res = await axiosInstance.post('/users/addresses', newAddress, {
                 headers: { Authorization: `Bearer ${token}` }
             })
             if (res.data.success) {
@@ -105,7 +105,7 @@ const Checkout = () => {
                 notes: ''
             }
 
-            const res = await axios.post('http://localhost:5001/api/orders', payload, {
+            const res = await axiosInstance.post('/orders', payload, {
                 headers: { Authorization: `Bearer ${token}` }
             })
 
@@ -287,3 +287,4 @@ const Checkout = () => {
 }
 
 export default Checkout
+

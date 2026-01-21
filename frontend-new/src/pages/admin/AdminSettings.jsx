@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import axiosInstance from '../../lib/axios'
 import { Save, Loader } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 import { useAuthStore } from '../../store/authStore'
@@ -24,7 +24,7 @@ const AdminSettings = () => {
 
   const fetchSettings = async () => {
     try {
-      const res = await axios.get('http://localhost:5001/api/cms/admin/settings', {
+      const res = await axiosInstance.get('/cms/admin/settings', {
         headers: { Authorization: `Bearer ${token}` }
       })
       if (res.data.success) {
@@ -54,7 +54,7 @@ const AdminSettings = () => {
     e.preventDefault()
     setSaving(true)
     try {
-      await axios.put('http://localhost:5001/api/cms/admin/settings', settings, {
+      await axiosInstance.put('/cms/admin/settings', settings, {
         headers: { Authorization: `Bearer ${token}` }
       })
       toast.success('Settings updated successfully')
@@ -187,3 +187,4 @@ const AdminSettings = () => {
 }
 
 export default AdminSettings
+

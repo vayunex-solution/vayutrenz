@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import axiosInstance from '../../lib/axios'
 import { Plus, Trash2, Edit2, Save, X, Image as ImageIcon, ToggleLeft, ToggleRight } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 import { useAuthStore } from '../../store/authStore'
@@ -27,7 +27,7 @@ const AdminHero = () => {
 
   const fetchSlides = async () => {
     try {
-      const res = await axios.get('http://localhost:5001/api/hero')
+      const res = await axiosInstance.get('/hero')
       setSlides(res.data.data || [])
     } catch (error) {
       toast.error('Failed to fetch slides')
@@ -39,9 +39,7 @@ const AdminHero = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure?')) return
     try {
-      await axios.delete(`http://localhost:5001/api/hero/${id}`, {
-         headers: { Authorization: `Bearer ${token}` }
-      })
+      await axiosInstance.delete(`/hero/${id}`)
       toast.success('Slide deleted')
       fetchSlides()
     } catch (error) {
@@ -65,12 +63,10 @@ const AdminHero = () => {
     e.preventDefault()
     try {
       if (currentSlide) {
-        await axios.put(`http://localhost:5001/api/hero/${currentSlide.id}`, formData, {
-            headers: { Authorization: `Bearer ${token}` }
-        })
+        await axiosInstance.put(`/hero/${currentSlide.id}`, formData)
         toast.success('Slide updated')
       } else {
-        await axios.post('http://localhost:5001/api/hero', formData, {
+        await axiosInstance.post('/hero', formData, {
             headers: { Authorization: `Bearer ${token}` }
         })
         toast.success('Slide created')
@@ -206,3 +202,4 @@ const AdminHero = () => {
   )
 }
 export default AdminHero
+

@@ -4,7 +4,7 @@ import { ArrowRight, Truck, RefreshCw, Shield, Award, ChevronRight, ChevronLeft,
 import { useProductStore } from '../store/productStore'
 import { useThemeStore } from '../store/themeStore'
 import ProductCard from '../components/product/ProductCard'
-import axios from 'axios'
+import axiosInstance from '../lib/axios'
 
 const Home = () => {
   const { featuredProducts, getFeaturedProducts, getCategories } = useProductStore()
@@ -18,7 +18,7 @@ const Home = () => {
   useEffect(() => {
     const fetchSlides = async () => {
       try {
-        const res = await axios.get('http://localhost:5001/api/hero')
+        const res = await axiosInstance.get('/hero')
         if (res.data.success && res.data.data.length > 0) {
           setSlides(res.data.data)
         } else {
@@ -210,3 +210,4 @@ const Home = () => {
 }
 
 export default Home
+

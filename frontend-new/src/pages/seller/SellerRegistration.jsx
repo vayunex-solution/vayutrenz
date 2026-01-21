@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import axios from 'axios'
+import axiosInstance from '../../lib/axios'
 import { Store, MapPin, FileText, Send, Loader, Info } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 import { useAuthStore } from '../../store/authStore'
@@ -26,7 +26,7 @@ const SellerRegistration = () => {
         
         setLoading(true)
         try {
-            const res = await axios.post('http://localhost:5001/api/seller/apply', formData, {
+            const res = await axiosInstance.post('/seller/apply', formData, {
                 headers: { Authorization: `Bearer ${token}` }
             })
             if (res.data.success) {
@@ -130,3 +130,4 @@ const SellerRegistration = () => {
     )
 }
 export default SellerRegistration
+
