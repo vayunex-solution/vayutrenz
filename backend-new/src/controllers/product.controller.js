@@ -17,7 +17,7 @@ export const getProducts = async (req, res) => {
         } = req.query
 
         const offset = (parseInt(page) - 1) * parseInt(limit)
-        let whereClauses = ['is_active = 1']
+        let whereClauses = ['p.is_active = 1']
         let params = []
 
         if (seller_id) {
