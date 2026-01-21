@@ -19,8 +19,9 @@ const Home = () => {
     const fetchSlides = async () => {
       try {
         const res = await axiosInstance.get('/hero')
-        if (res.data.success && res.data.data.length > 0) {
-          setSlides(res.data.data)
+        const slidesData = res.data?.data || []
+        if (res.data?.success && slidesData.length > 0) {
+          setSlides(slidesData)
         } else {
             // Fallback if DB empty
             setSlides([
