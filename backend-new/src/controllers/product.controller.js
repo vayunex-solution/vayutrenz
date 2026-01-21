@@ -17,54 +17,60 @@ export const getProducts = async (req, res) => {
         } = req.query
 
         const offset = (parseInt(page) - 1) * parseInt(limit)
-        let whereClauses = ['p.is_active = 1']
+        let baseWhereClauses = []
         let params = []
 
         if (seller_id) {
-            whereClauses.push('seller_id = ?')
+            baseWhereClauses.push('seller_id = ?')
             params.push(seller_id)
         }
 
         if (category) {
-            whereClauses.push('category_id = (SELECT id FROM categories WHERE slug = ?)')
+            baseWhereClauses.push('category_id = (SELECT id FROM categories WHERE slug = ?)')
             params.push(category)
         }
 
         if (gender && gender !== 'all') {
-            whereClauses.push("(gender = ? OR gender = 'unisex')")
+            baseWhereClauses.push("(gender = ? OR gender = 'unisex')")
             params.push(gender)
         }
 
         if (minPrice) {
-            whereClauses.push('price >= ?')
+            baseWhereClauses.push('price >= ?')
             params.push(parseFloat(minPrice))
         }
 
         if (maxPrice) {
-            whereClauses.push('price <= ?')
+            baseWhereClauses.push('price <= ?')
             params.push(parseFloat(maxPrice))
         }
 
         if (search) {
-            whereClauses.push('(name LIKE ? OR description LIKE ? OR brand LIKE ?)')
+            baseWhereClauses.push('(name LIKE ? OR description LIKE ? OR brand LIKE ?)')
             const searchTerm = `%${search}%`
             params.push(searchTerm, searchTerm, searchTerm)
         }
 
         if (featured === 'true') {
-            whereClauses.push('is_featured = 1')
+            baseWhereClauses.push('is_featured = 1')
         }
 
-        const whereClause = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : ''
+        // For COUNT query (no alias)
+        const countWhereClauses = ['is_active = 1', ...baseWhereClauses]
+        const countWhereClause = countWhereClauses.length > 0 ? `WHERE ${countWhereClauses.join(' AND ')}` : ''
 
-        let orderBy = 'ORDER BY created_at DESC'
-        if (sort === 'price_low') orderBy = 'ORDER BY price ASC'
-        else if (sort === 'price_high') orderBy = 'ORDER BY price DESC'
-        else if (sort === 'rating') orderBy = 'ORDER BY rating DESC'
-        else if (sort === 'newest') orderBy = 'ORDER BY created_at DESC'
+        // For JOIN query (with alias)
+        const joinWhereClauses = ['p.is_active = 1', ...baseWhereClauses.map(c => c.replace(/^(seller_id|category_id|gender|price|name|description|brand|is_featured)/g, 'p.$1'))]
+        const joinWhereClause = joinWhereClauses.length > 0 ? `WHERE ${joinWhereClauses.join(' AND ')}` : ''
+
+        let orderBy = 'ORDER BY p.created_at DESC'
+        if (sort === 'price_low') orderBy = 'ORDER BY p.price ASC'
+        else if (sort === 'price_high') orderBy = 'ORDER BY p.price DESC'
+        else if (sort === 'rating') orderBy = 'ORDER BY p.rating DESC'
+        else if (sort === 'newest') orderBy = 'ORDER BY p.created_at DESC'
 
         // Get total count
-        const countResult = await queryOne(`SELECT COUNT(*) as total FROM products ${whereClause}`, params)
+        const countResult = await queryOne(`SELECT COUNT(*) as total FROM products ${countWhereClause}`, params)
         const total = countResult?.total || 0
 
         // Get products
@@ -72,7 +78,7 @@ export const getProducts = async (req, res) => {
       SELECT p.*, c.name as category_name, c.slug as category_slug
       FROM products p
       LEFT JOIN categories c ON p.category_id = c.id
-      ${whereClause}
+      ${joinWhereClause}
       ${orderBy}
       LIMIT ? OFFSET ?
     `, [...params, parseInt(limit), offset])
