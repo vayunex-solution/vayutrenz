@@ -23,7 +23,18 @@ const Login = () => {
 
         if (result.success) {
             toast.success('Welcome back!')
-            navigate('/')
+            
+            // Redirect based on user role
+            const userRole = result.user?.role
+            if (userRole === 'admin') {
+                navigate('/admin')
+            } else if (userRole === 'seller') {
+                navigate('/seller')
+            } else if (userRole === 'delivery') {
+                navigate('/delivery/dashboard')
+            } else {
+                navigate('/')
+            }
         } else {
             toast.error(result.message)
         }
