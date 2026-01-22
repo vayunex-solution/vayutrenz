@@ -75,7 +75,10 @@ const Home = () => {
     { name: 'Accessories', image: 'https://images.unsplash.com/photo-1611085583191-a3b181a88401?q=80&w=500&auto=format&fit=crop' }
   ]
   
-  if (loading) return <div className="loader-container"><Loader className="spin" size={40} /></div>
+  if (loading || slides.length === 0) return <div className="loader-container"><Loader className="spin" size={40} /></div>
+
+  // Get current slide safely
+  const currentSlideData = slides[currentSlide] || slides[0] || { accent_color: '#D4F804', title: '', subtitle: '', image_url: '', category_link: '/products' }
 
   return (
     <div className="home-page">
@@ -84,7 +87,7 @@ const Home = () => {
         
         {/* Dynamic Background */}
         <div className="hero-gradient-bg" style={{
-            background: `radial-gradient(circle at 50% 50%, ${slides[currentSlide].accent_color}20 0%, var(--color-bg) 100%)`
+            background: `radial-gradient(circle at 50% 50%, ${currentSlideData.accent_color}20 0%, var(--color-bg) 100%)`
         }}></div>
         
         <div className="glass-particles"></div>
@@ -125,7 +128,7 @@ const Home = () => {
           {/* 3D Product */}
           <div className="hero-product-3d">
             <div className="floating-card-container" style={{ transform: `perspective(1000px) rotateX(${mousePos.y * 5}deg) rotateY(${mousePos.x * -5}deg)` }}>
-              <div className="card-glow" style={{ background: slides[currentSlide].accent_color }}></div>
+              <div className="card-glow" style={{ background: currentSlideData.accent_color }}></div>
               <div className="glass-product-card">
                 {slides.map((slide, index) => (
                   <img 
