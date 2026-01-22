@@ -47,7 +47,7 @@ export const useAuthStore = create((set, get) => ({
         isLoading: false 
       })
       
-      return { success: true }
+      return { success: true, user: data.data }
     } catch (error) {
       set({ isLoading: false })
       return { 

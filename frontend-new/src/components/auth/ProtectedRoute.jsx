@@ -2,11 +2,11 @@ import { Navigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
 
 const ProtectedRoute = ({ children, requiredRole }) => {
-  const { isAuthenticated, user, loading } = useAuthStore()
+  const { isAuthenticated, user, isLoading } = useAuthStore()
   const location = useLocation()
 
   // Show loading while checking auth
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="loading-screen">
         <div className="loading-spinner"></div>
