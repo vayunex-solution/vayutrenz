@@ -65,8 +65,8 @@ const Home = () => {
     return () => clearInterval(interval)
   }, [slides])
   
-  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % slides.length)
-  const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)
+  const nextSlide = () => slides.length > 0 ? setCurrentSlide((prev) => (prev + 1) % slides.length) : null
+  const prevSlide = () => slides.length > 0 ? setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length) : null
 
   const categories = [
     { name: 'Streetwear', image: 'https://images.pexels.com/photos/1670735/pexels-photo-1670735.jpeg?auto=compress&cs=tinysrgb&w=800' },
@@ -188,7 +188,7 @@ const Home = () => {
             <div className="s-underline"></div>
           </div>
           <div className="product-grid">
-            {featuredProducts.length > 0 ? featuredProducts.slice(0,8).map((product, index) => (
+            {(featuredProducts || []).length > 0 ? (featuredProducts || []).slice(0,8).map((product, index) => (
               <div key={product.id || index} className="product-card-3d-hover">
                 <ProductCard product={product} />
               </div>
