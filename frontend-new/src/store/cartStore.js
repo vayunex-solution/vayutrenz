@@ -130,12 +130,12 @@ export const useCartStore = create(
       
       // Get cart count
       getCount: () => {
-        return get().items.reduce((sum, item) => sum + item.quantity, 0)
+        return (get().items || []).reduce((sum, item) => sum + item.quantity, 0)
       },
       
       // Get cart total
       getTotal: () => {
-        return get().items.reduce((sum, item) => {
+        return (get().items || []).reduce((sum, item) => {
           const price = item.product?.price || 0
           return sum + (price * item.quantity)
         }, 0)

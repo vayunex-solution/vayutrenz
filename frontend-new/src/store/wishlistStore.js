@@ -90,11 +90,11 @@ export const useWishlistStore = create(
       
       // Check if product is in wishlist
       isInWishlist: (productId) => {
-        return get().items.some(item => item.product_id === productId)
+        return (get().items || []).some(item => item.product_id === productId)
       },
       
       // Get count
-      getCount: () => get().items.length
+      getCount: () => (get().items || []).length
     }),
     {
       name: 'luxe_wishlist',
