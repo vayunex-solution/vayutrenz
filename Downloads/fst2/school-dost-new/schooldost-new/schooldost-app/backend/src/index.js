@@ -97,6 +97,9 @@ app.use('/uploads', express.static('uploads'));
 // Auth routes (stricter rate limiting)
 app.use('/api/auth', authLimiter, authRoutes);
 
+// Serve static files (uploads)
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
 // Upload routes (upload rate limiting)
 app.use('/api/upload', uploadLimiter, uploadRoutes);
 

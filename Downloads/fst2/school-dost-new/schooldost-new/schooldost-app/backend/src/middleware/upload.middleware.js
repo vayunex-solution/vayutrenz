@@ -21,10 +21,11 @@ const fileFilter = (req, file, cb) => {
     'image/jpg', 
     'image/png',
     'image/gif',
-    'image/webp',
-    'video/mp4',
-    'video/webm',
-    'video/quicktime'
+    'image/webp'
+    // Video support coming soon
+    // 'video/mp4',
+    // 'video/webm',
+    // 'video/quicktime'
   ];
   
   if (allowedTypes.includes(file.mimetype)) {

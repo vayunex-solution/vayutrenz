@@ -169,7 +169,7 @@ export default function CreatePost({ onPostCreated }) {
         <button className="create-post-action" onClick={handleImageClick}>
           <FiImage /> Image
         </button>
-        <button className="create-post-action">
+        <button className="create-post-action" onClick={() => alert('Video support coming soon!')}>
           <FiVideo /> Video
         </button>
         <button className="create-post-action">

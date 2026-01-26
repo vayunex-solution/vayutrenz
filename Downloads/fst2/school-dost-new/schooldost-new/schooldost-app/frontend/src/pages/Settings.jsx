@@ -120,6 +120,75 @@ export default function Settings() {
           </div>
         )}
 
+        {/* Banner upload section */}
+        <div style={{
+          background: 'var(--bg-card)',
+          borderRadius: '20px',
+          padding: '20px',
+          marginBottom: '24px',
+          border: '1px solid var(--border-dark)',
+          position: 'relative',
+          overflow: 'hidden'
+        }}>
+          <h3 style={{ marginBottom: '16px', fontSize: '1.1rem' }}>Banner Image</h3>
+          <div style={{
+            height: '150px',
+            borderRadius: '12px',
+            background: user?.coverUrl 
+              ? `url(${user.coverUrl.startsWith('http') ? user.coverUrl : API_BASE + user.coverUrl}) center/cover`
+              : 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
+            position: 'relative'
+          }}>
+             <button
+              onClick={() => document.getElementById('coverInput').click()}
+              style={{
+                position: 'absolute',
+                bottom: '10px',
+                right: '10px',
+                padding: '8px 16px',
+                borderRadius: '8px',
+                background: 'rgba(0,0,0,0.6)',
+                color: 'white',
+                border: '1px solid rgba(255,255,255,0.2)',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                backdropFilter: 'blur(4px)'
+              }}
+            >
+              <FiCamera /> Change Banner
+            </button>
+            <input
+              id="coverInput"
+              type="file"
+              onChange={async (e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                if (!file.type.startsWith('image/')) {
+                  setMessage({ type: 'error', text: 'Please select an image file' });
+                  return;
+                }
+                if (file.size > 5 * 1024 * 1024) {
+                  setMessage({ type: 'error', text: 'Image must be less than 5MB' });
+                  return;
+                }
+                try {
+                  const { data } = await uploadAPI.cover(file);
+                  const fullCoverUrl = `${API_BASE}${data.coverUrl}`;
+                  updateUser({ ...user, coverUrl: fullCoverUrl });
+                  setMessage({ type: 'success', text: 'Banner updated!' });
+                } catch (error) {
+                  console.error('Upload error:', error);
+                  setMessage({ type: 'error', text: 'Failed to upload banner' });
+                }
+              }}
+              accept="image/*"
+              style={{ display: 'none' }}
+            />
+          </div>
+        </div>
+
         {/* Profile Picture Section */}
         <div style={{
           background: 'var(--bg-card)',
