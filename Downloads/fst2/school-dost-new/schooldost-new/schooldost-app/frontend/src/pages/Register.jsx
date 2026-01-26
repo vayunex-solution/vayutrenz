@@ -1,6 +1,6 @@
 // Register Page - With Official Logo
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { FiSun, FiMoon } from 'react-icons/fi';
@@ -22,6 +22,8 @@ export default function Register() {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,6 +48,8 @@ export default function Register() {
         email: formData.email,
         password: formData.password
       });
+      // Redirect to OTP verification page
+      navigate('/verify-otp', { state: { email: formData.email } });
     } catch (err) {
       setError(err.response?.data?.error || 'Registration failed. Please try again.');
     } finally {
