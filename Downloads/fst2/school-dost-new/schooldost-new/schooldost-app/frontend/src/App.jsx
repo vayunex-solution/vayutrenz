@@ -9,6 +9,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import VerifyOtp from './pages/VerifyOtp';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
 import Matches from './pages/Matches';
@@ -25,7 +26,7 @@ import './index.css';
 // Protected Route Component
 function ProtectedRoute({ children }) {
   const { isAuthenticated, loading } = useAuth();
-  
+
   if (loading) {
     return (
       <div className="loading-screen">
@@ -33,11 +34,11 @@ function ProtectedRoute({ children }) {
       </div>
     );
   }
-  
+
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
-  
+
   return (
     <>
       {children}
@@ -49,7 +50,7 @@ function ProtectedRoute({ children }) {
 // Admin Route - requires admin role
 function AdminRoute({ children }) {
   const { isAuthenticated, loading, user } = useAuth();
-  
+
   if (loading) {
     return (
       <div className="loading-screen">
@@ -57,7 +58,7 @@ function AdminRoute({ children }) {
       </div>
     );
   }
-  
+
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
@@ -66,7 +67,7 @@ function AdminRoute({ children }) {
   if (user?.role !== 'ADMIN' && user?.role !== 'MODERATOR') {
     return <Navigate to="/" replace />;
   }
-  
+
   return (
     <>
       {children}
@@ -78,7 +79,7 @@ function AdminRoute({ children }) {
 // Public Route (redirect if already logged in)
 function PublicRoute({ children }) {
   const { isAuthenticated, loading } = useAuth();
-  
+
   if (loading) {
     return (
       <div className="loading-screen">
@@ -86,11 +87,11 @@ function PublicRoute({ children }) {
       </div>
     );
   }
-  
+
   if (isAuthenticated) {
     return <Navigate to="/" replace />;
   }
-  
+
   return children;
 }
 
@@ -110,7 +111,10 @@ function AppRoutes() {
       <Route path="/reset-password" element={
         <PublicRoute><ResetPassword /></PublicRoute>
       } />
-      
+      <Route path="/verify-otp" element={
+        <PublicRoute><VerifyOtp /></PublicRoute>
+      } />
+
       {/* Protected Routes */}
       <Route path="/" element={
         <ProtectedRoute><Home /></ProtectedRoute>
@@ -139,12 +143,12 @@ function AppRoutes() {
       <Route path="/settings" element={
         <ProtectedRoute><Settings /></ProtectedRoute>
       } />
-      
+
       {/* Admin Routes */}
       <Route path="/admin" element={
         <AdminRoute><AdminDashboard /></AdminRoute>
       } />
-      
+
       {/* Catch all */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
