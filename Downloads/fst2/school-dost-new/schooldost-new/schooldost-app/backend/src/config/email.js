@@ -249,9 +249,55 @@ const sendWelcomeEmail = async (email, fullName) => {
     }
 };
 
+// Send OTP email
+const sendOtpEmail = async (email, otp, fullName) => {
+    const content = `
+      <div style="text-align: center;">
+        <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%); border-radius: 50%; margin: 0 auto 24px; display: flex; align-items: center; justify-content: center;">
+          <span style="font-size: 40px; line-height: 80px;">🔢</span>
+        </div>
+        
+        <h2 style="margin: 0 0 8px; color: #1a1a2e; font-size: 28px; font-weight: 700;">
+          Verify your Email
+        </h2>
+        <p style="margin: 0 0 32px; color: #6b7280; font-size: 16px;">
+          Hey ${fullName}, use the code below to verify your account.
+        </p>
+        
+        <div style="background: #f3f4f6; padding: 24px; border-radius: 16px; margin-bottom: 32px; letter-spacing: 8px; font-family: monospace; font-size: 36px; font-weight: 700; color: #1a1a2e; border: 2px dashed #cbd5e1;">
+          ${otp}
+        </div>
+        
+        <p style="margin: 0 0 8px; color: #4b5563; font-size: 14px;">
+          This code will expire in 15 minutes.
+        </p>
+        <p style="margin: 0; color: #9ca3af; font-size: 14px;">
+          If you didn't create an account, please ignore this email.
+        </p>
+      </div>
+    `;
+
+    const mailOptions = {
+        from: `"School Dost 🎓" <${process.env.SMTP_USER || 'no_reply@schooldost.com'}>`,
+        to: email,
+        subject: `🔢 ${otp} is your verification code`,
+        html: getEmailTemplate(content)
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log('✅ OTP email sent to:', email);
+        return true;
+    } catch (error) {
+        console.error('❌ Send OTP email error:', error);
+        return false;
+    }
+};
+
 module.exports = {
     transporter,
     sendVerificationEmail,
     sendPasswordResetEmail,
-    sendWelcomeEmail
+    sendWelcomeEmail,
+    sendOtpEmail
 };

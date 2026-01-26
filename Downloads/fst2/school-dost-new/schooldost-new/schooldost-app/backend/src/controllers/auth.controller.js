@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const prisma = require('../config/database');
 const { generateToken } = require('../middleware/auth.middleware');
-const { sendVerificationEmail, sendPasswordResetEmail } = require('../config/email');
+const { sendVerificationEmail, sendPasswordResetEmail, sendOtpEmail, sendWelcomeEmail } = require('../config/email');
 const { validatePassword } = require('../middleware/security.middleware');
 
 // Register new user
@@ -52,8 +52,8 @@ const register = async (req, res) => {
         // Hash password
         const hashedPassword = await bcrypt.hash(password, 12);
 
-        // Generate verification token
-        const verificationToken = crypto.randomBytes(32).toString('hex');
+        // Generate 6-digit OTP
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
         // Create user
         const user = await prisma.user.create({
@@ -62,8 +62,8 @@ const register = async (req, res) => {
                 password: hashedPassword,
                 fullName,
                 username: username.toLowerCase(),
-                verificationToken,
-                tokenExpiry: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
+                verificationToken: otp,
+                tokenExpiry: new Date(Date.now() + 15 * 60 * 1000) // 15 minutes
             },
             select: {
                 id: true,
@@ -75,16 +75,20 @@ const register = async (req, res) => {
             }
         });
 
-        // Send verification email (async, don't wait)
-        sendVerificationEmail(email, verificationToken, fullName);
+        // Send OTP email (async)
+        // Note: In production, consider using a queue
+        sendOtpEmail(email, otp, fullName).catch(err => console.error('Failed to send OTP:', err));
 
-        // Generate token
+        // Generate token (optional: you might want to force login after verification, but here we can return it)
+        // Usually for OTP flow, we verify first, then issue token.
+        // But to keep it effectively similar to before, we return token but user needs to verify to use verified features.
         const token = generateToken(user.id);
 
         res.status(201).json({
-            message: 'Account created successfully. Please check your email to verify your account.',
+            message: 'Account created! Please check your email for the verification code.',
             user,
-            token
+            token,
+            requireVerification: true
         });
     } catch (error) {
         console.error('Register error:', error);
@@ -156,7 +160,90 @@ const login = async (req, res) => {
     }
 };
 
-// Verify email
+// Verify OTP
+const verifyOtp = async (req, res) => {
+    try {
+        const { email, otp } = req.body;
+
+        if (!email || !otp) {
+            return res.status(400).json({ error: 'Email and OTP are required' });
+        }
+
+        const user = await prisma.user.findFirst({
+            where: {
+                email,
+                verificationToken: otp,
+                tokenExpiry: { gt: new Date() }
+            }
+        });
+
+        if (!user) {
+            return res.status(400).json({ error: 'Invalid or expired OTP' });
+        }
+
+        // Update user verification status
+        await prisma.user.update({
+            where: { id: user.id },
+            data: {
+                emailVerified: true,
+                isVerified: true,
+                verificationToken: null,
+                tokenExpiry: null
+            }
+        });
+
+        // Send Welcome Email
+        sendWelcomeEmail(email, user.fullName).catch(err => console.error('Failed to send welcome email:', err));
+
+        res.json({ message: 'Email verified successfully! You can now access all features.' });
+    } catch (error) {
+        console.error('Verify OTP error:', error);
+        res.status(500).json({ error: 'Verification failed' });
+    }
+};
+
+// Resend OTP
+const resendOtp = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({ error: 'Email is required' });
+        }
+
+        const user = await prisma.user.findUnique({ where: { email } });
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        if (user.emailVerified) {
+            return res.status(400).json({ error: 'Email already verified' });
+        }
+
+        // Generate new OTP
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+        // Update user
+        await prisma.user.update({
+            where: { id: user.id },
+            data: {
+                verificationToken: otp,
+                tokenExpiry: new Date(Date.now() + 15 * 60 * 1000) // 15 mins
+            }
+        });
+
+        // Send OTP email
+        await sendOtpEmail(email, otp, user.fullName);
+
+        res.json({ message: 'New verification code sent' });
+    } catch (error) {
+        console.error('Resend OTP error:', error);
+        res.status(500).json({ error: 'Failed to resend code' });
+    }
+};
+
+// Verify email link (Legacy support)
 const verifyEmail = async (req, res) => {
     try {
         const { token } = req.params;
@@ -343,6 +430,8 @@ module.exports = {
     me, 
     logout, 
     verifyEmail, 
+    verifyOtp,
+    resendOtp,
     forgotPassword, 
     resetPassword,
     googleCallback

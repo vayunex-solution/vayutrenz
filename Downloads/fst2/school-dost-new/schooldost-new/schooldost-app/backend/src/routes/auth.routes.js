@@ -11,7 +11,9 @@ router.get('/me', authenticate, authController.me);
 router.post('/logout', authenticate, authController.logout);
 
 // Email Verification
-router.get('/verify/:token', authController.verifyEmail);
+router.get('/verify/:token', authController.verifyEmail); // Legacy link support
+router.post('/verify-otp', authController.verifyOtp);
+router.post('/resend-otp', authController.resendOtp);
 
 // Password Reset
 router.post('/forgot-password', authController.forgotPassword);
