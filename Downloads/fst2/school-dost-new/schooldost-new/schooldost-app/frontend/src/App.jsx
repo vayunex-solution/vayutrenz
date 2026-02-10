@@ -1,7 +1,9 @@
 // SchoolDost App - Main Entry Point
+import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { NotificationProvider } from './context/NotificationContext';
 import MobileFooter from './components/MobileFooter';
 
 // Pages
@@ -17,22 +19,38 @@ import Messages from './pages/Messages';
 import Communities from './pages/Communities';
 import Settings from './pages/Settings';
 import Notifications from './pages/Notifications';
-import Discover from './pages/Discover';
+import Search from './pages/Search';
 import AdminDashboard from './pages/AdminDashboard';
+import HashtagPage from './pages/HashtagPage';
+import GroupDetail from './pages/GroupDetail';
+import Events from './pages/Events';
+import EventDetail from './pages/EventDetail';
+import Marketplace from './pages/Marketplace';
+import MarketplaceDetail from './pages/MarketplaceDetail';
+import Leaderboard from './pages/Leaderboard';
 
 // Styles
 import './index.css';
 
+import ProfileWizard from './components/ProfileWizard';
+
 // Protected Route Component
 function ProtectedRoute({ children }) {
-  const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, loading, user } = useAuth();
+  const [showWizard, setShowWizard] = React.useState(false);
+
+  React.useEffect(() => {
+    if (isAuthenticated && user && !user.isProfileComplete) {
+      // Check if essential fields are missing as backup check
+      const isActuallyIncomplete = !user.college || !user.department;
+      if (isActuallyIncomplete || user.isProfileComplete === false) {
+        setShowWizard(true);
+      }
+    }
+  }, [isAuthenticated, user]);
 
   if (loading) {
-    return (
-      <div className="loading-screen">
-        <div className="spinner"></div>
-      </div>
-    );
+    // ... existing loading code ...
   }
 
   if (!isAuthenticated) {
@@ -43,6 +61,7 @@ function ProtectedRoute({ children }) {
     <>
       {children}
       <MobileFooter />
+      <ProfileWizard isOpen={showWizard} onClose={() => setShowWizard(false)} />
     </>
   );
 }
@@ -78,7 +97,7 @@ function AdminRoute({ children }) {
 
 // Public Route (redirect if already logged in)
 function PublicRoute({ children }) {
-  const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, loading, user } = useAuth();
 
   if (loading) {
     return (
@@ -89,6 +108,9 @@ function PublicRoute({ children }) {
   }
 
   if (isAuthenticated) {
+    if (user?.role === 'ADMIN' || user?.role === 'MODERATOR') {
+      return <Navigate to="/admin" replace />;
+    }
     return <Navigate to="/" replace />;
   }
 
@@ -119,8 +141,8 @@ function AppRoutes() {
       <Route path="/" element={
         <ProtectedRoute><Home /></ProtectedRoute>
       } />
-      <Route path="/discover" element={
-        <ProtectedRoute><Discover /></ProtectedRoute>
+      <Route path="/search" element={
+        <ProtectedRoute><Search /></ProtectedRoute>
       } />
       <Route path="/profile/:userId?" element={
         <ProtectedRoute><Profile /></ProtectedRoute>
@@ -143,6 +165,27 @@ function AppRoutes() {
       <Route path="/settings" element={
         <ProtectedRoute><Settings /></ProtectedRoute>
       } />
+      <Route path="/hashtag/:tag" element={
+        <ProtectedRoute><HashtagPage /></ProtectedRoute>
+      } />
+      <Route path="/groups/:groupId" element={
+        <ProtectedRoute><GroupDetail /></ProtectedRoute>
+      } />
+      <Route path="/events" element={
+        <ProtectedRoute><Events /></ProtectedRoute>
+      } />
+      <Route path="/events/:eventId" element={
+        <ProtectedRoute><EventDetail /></ProtectedRoute>
+      } />
+      <Route path="/marketplace" element={
+        <ProtectedRoute><Marketplace /></ProtectedRoute>
+      } />
+      <Route path="/marketplace/:listingId" element={
+        <ProtectedRoute><MarketplaceDetail /></ProtectedRoute>
+      } />
+      <Route path="/leaderboard" element={
+        <ProtectedRoute><Leaderboard /></ProtectedRoute>
+      } />
 
       {/* Admin Routes */}
       <Route path="/admin" element={
@@ -160,7 +203,9 @@ function App() {
     <BrowserRouter>
       <ThemeProvider>
         <AuthProvider>
-          <AppRoutes />
+          <NotificationProvider>
+            <AppRoutes />
+          </NotificationProvider>
         </AuthProvider>
       </ThemeProvider>
     </BrowserRouter>

@@ -1,6 +1,6 @@
 // Notifications Page
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FiBell, FiHeart, FiMessageCircle, FiUserPlus, FiUsers, FiCheck, FiTrash2 } from 'react-icons/fi';
 import { notificationAPI } from '../services/api';
 import Sidebar from '../components/Sidebar';
@@ -8,6 +8,7 @@ import Sidebar from '../components/Sidebar';
 const API_BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
 
 export default function Notifications() {
+    const navigate = useNavigate();
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -89,7 +90,34 @@ export default function Notifications() {
         return date.toLocaleDateString();
     };
 
-    const unreadCount = notifications.filter(n => !n.read).length;
+    const unreadCount = notifications.filter(n => !n.isRead).length;
+
+    // Get notification link based on type
+    const getNotificationLink = (notification) => {
+        switch (notification.type) {
+            case 'like':
+            case 'comment':
+                return notification.postId ? `/post/${notification.postId}` : '/';
+            case 'follow':
+                return notification.senderId ? `/profile/${notification.senderId}` : '/';
+            case 'match':
+                return '/matches';
+            case 'message':
+                return notification.senderId ? `/messages/${notification.senderId}` : '/messages';
+            default:
+                return '/';
+        }
+    };
+
+    // Handle notification click
+    const handleNotificationClick = async (notification) => {
+        // Mark as read if not already
+        if (!notification.isRead) {
+            handleMarkAsRead(notification.id);
+        }
+        // Navigate to relevant page
+        navigate(getNotificationLink(notification));
+    };
 
     return (
         <div className="app-layout">
@@ -132,15 +160,19 @@ export default function Notifications() {
                         {notifications.map((notification, index) => (
                             <div
                                 key={notification.id}
+                                onClick={() => handleNotificationClick(notification)}
                                 style={{
                                     display: 'flex',
                                     alignItems: 'center',
                                     gap: '14px',
                                     padding: '18px 20px',
                                     borderBottom: index < notifications.length - 1 ? '1px solid var(--border-dark)' : 'none',
-                                    background: notification.read ? 'transparent' : 'rgba(250, 204, 21, 0.05)',
-                                    transition: 'background 0.2s'
+                                    background: notification.isRead ? 'transparent' : 'rgba(250, 204, 21, 0.05)',
+                                    transition: 'background 0.2s',
+                                    cursor: 'pointer'
                                 }}
+                                onMouseEnter={(e) => e.currentTarget.style.background = 'var(--bg-card-hover)'}
+                                onMouseLeave={(e) => e.currentTarget.style.background = notification.isRead ? 'transparent' : 'rgba(250, 204, 21, 0.05)'}
                             >
                                 {/* Icon */}
                                 <div style={{
@@ -191,9 +223,9 @@ export default function Notifications() {
 
                                 {/* Actions */}
                                 <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
-                                    {!notification.read && (
+                                    {!notification.isRead && (
                                         <button
-                                            onClick={() => handleMarkAsRead(notification.id)}
+                                            onClick={(e) => { e.stopPropagation(); handleMarkAsRead(notification.id); }}
                                             style={{
                                                 padding: '8px',
                                                 borderRadius: '8px',
@@ -208,7 +240,7 @@ export default function Notifications() {
                                         </button>
                                     )}
                                     <button
-                                        onClick={() => handleDelete(notification.id)}
+                                        onClick={(e) => { e.stopPropagation(); handleDelete(notification.id); }}
                                         style={{
                                             padding: '8px',
                                             borderRadius: '8px',
@@ -224,7 +256,7 @@ export default function Notifications() {
                                 </div>
 
                                 {/* Unread dot */}
-                                {!notification.read && (
+                                {!notification.isRead && (
                                     <div style={{
                                         width: '8px',
                                         height: '8px',

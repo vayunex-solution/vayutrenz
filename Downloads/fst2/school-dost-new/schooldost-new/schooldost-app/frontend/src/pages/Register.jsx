@@ -5,11 +5,13 @@ import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { FiSun, FiMoon } from 'react-icons/fi';
 import logoImg from '../assets/logo.png';
+import './Auth.css'; // Import Premium Styles
 
 export default function Register() {
   const { register } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const [formData, setFormData] = useState({
+// ... keep existing state ...
     fullName: '',
     username: '',
     email: '',
@@ -61,15 +63,19 @@ export default function Register() {
     <div className="auth-container">
       <button
         onClick={toggleTheme}
+        className="theme-toggle-btn"
         style={{
           position: 'fixed',
           top: '20px',
           right: '20px',
           padding: '12px',
           background: 'var(--bg-card)',
-          borderRadius: '10px',
-          color: 'var(--text-white)',
-          border: '1px solid var(--border-dark)'
+          borderRadius: '50%',
+          color: 'var(--text-primary)',
+          border: '1px solid var(--border-color)',
+          cursor: 'pointer',
+          zIndex: 100,
+          boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
         }}
       >
         {theme === 'dark' ? <FiSun size={20} /> : <FiMoon size={20} />}
@@ -92,16 +98,7 @@ export default function Register() {
         <p className="auth-subtitle">Find a Friend and Mentor</p>
 
         {error && (
-          <div style={{
-            background: 'rgba(239, 68, 68, 0.1)',
-            color: '#ef4444',
-            padding: '12px 16px',
-            borderRadius: '10px',
-            marginBottom: '20px',
-            textAlign: 'center',
-            fontSize: '0.9rem',
-            border: '1px solid rgba(239, 68, 68, 0.2)'
-          }}>
+          <div className="error-message">
             {error}
           </div>
         )}

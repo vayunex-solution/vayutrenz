@@ -1,285 +1,171 @@
-// Discover / Explore Page
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { FiSearch, FiTrendingUp, FiUsers, FiHash, FiFilter } from 'react-icons/fi';
-import { userAPI, postAPI } from '../services/api';
+// Discover / Explore Page (Tinder Style)
+import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
+import { matchAPI } from '../services/api';
 import Sidebar from '../components/Sidebar';
-import PostCard from '../components/PostCard';
-
-const API_BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
+import '../components/SwipeCard.css';
+import { FiX, FiHeart, FiStar, FiMapPin, FiBriefcase } from 'react-icons/fi';
+import { getAvatarUrl } from '../utils/imageUtils';
 
 export default function Discover() {
-    const [activeTab, setActiveTab] = useState('trending');
-    const [searchQuery, setSearchQuery] = useState('');
-    const [searchResults, setSearchResults] = useState({ users: [], posts: [] });
-    const [trendingPosts, setTrendingPosts] = useState([]);
-    const [suggestedUsers, setSuggestedUsers] = useState([]);
+    const [profiles, setProfiles] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [searching, setSearching] = useState(false);
+    const [matchModal, setMatchModal] = useState(null);
 
     useEffect(() => {
-        loadData();
+        loadProfiles();
     }, []);
 
-    const loadData = async () => {
+    const loadProfiles = async () => {
         try {
-            const [postsRes, usersRes] = await Promise.all([
-                postAPI.getFeed(),
-                userAPI.getSuggested()
-            ]);
-            setTrendingPosts(postsRes.data.posts || []);
-            setSuggestedUsers(usersRes.data.users || []);
+            const { data } = await matchAPI.getDiscover();
+            setProfiles(data.users || []);
         } catch (error) {
-            console.error('Load data error:', error);
+            console.error('Load profiles error:', error);
         } finally {
             setLoading(false);
         }
     };
 
-    const handleSearch = async (e) => {
-        e.preventDefault();
-        if (!searchQuery.trim()) return;
-
-        setSearching(true);
-        setActiveTab('search');
+    const handleSwipe = async (direction, user) => {
+        // Remove card from stack
+        setProfiles(prev => prev.filter(p => p.id !== user.id));
 
         try {
-            const { data } = await userAPI.search(searchQuery);
-            setSearchResults({
-                users: data.users || [],
-                posts: []
-            });
-        } catch (error) {
-            console.error('Search error:', error);
-        } finally {
-            setSearching(false);
-        }
-    };
+            const { data } = await matchAPI.swipe(user.id, direction);
 
-    const handleFollow = async (userId) => {
-        try {
-            await userAPI.follow(userId);
-            setSuggestedUsers(prev => prev.filter(u => u.id !== userId));
+            if (data.match) {
+                setMatchModal(data.match.user);
+            }
         } catch (error) {
-            console.error('Follow error:', error);
+            console.error('Swipe error:', error);
         }
-    };
-
-    const getAvatarUrl = (user) => {
-        if (user?.avatarUrl) {
-            return user.avatarUrl.startsWith('http')
-                ? user.avatarUrl
-                : `${API_BASE}${user.avatarUrl}`;
-        }
-        return `https://api.dicebear.com/8.x/initials/svg?seed=${user?.fullName}&backgroundColor=facc15&textColor=000`;
     };
 
     return (
-        <div className="app-layout">
+        <div className="app-layout discover-page">
             <Sidebar />
 
-            <main className="main-content">
-                <header className="page-header">
-                    <h1><FiTrendingUp style={{ marginRight: '12px' }} />Discover</h1>
-                    <p>Explore trending posts and find new dosts</p>
+            <main className="main-content" style={{ overflow: 'hidden' }}>
+                <header className="page-header" style={{ textAlign: 'center' }}>
+                    <h1>Discover</h1>
+                    <p>Find your perfect Study Dost based on interests</p>
                 </header>
 
-                {/* Search Bar */}
-                <form onSubmit={handleSearch} style={{ marginBottom: '24px' }}>
-                    <div className="search-box" style={{ background: 'var(--bg-card)' }}>
-                        <FiSearch />
-                        <input
-                            type="text"
-                            placeholder="Search users, posts, hashtags..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                        />
-                        <button type="submit" className="btn btn-primary" style={{ padding: '8px 16px', marginLeft: '8px' }}>
-                            Search
-                        </button>
-                    </div>
-                </form>
-
-                {/* Tabs */}
-                <div className="tabs">
-                    <button
-                        className={`tab ${activeTab === 'trending' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('trending')}
-                    >
-                        <FiTrendingUp style={{ marginRight: '6px' }} /> Trending
-                    </button>
-                    <button
-                        className={`tab ${activeTab === 'people' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('people')}
-                    >
-                        <FiUsers style={{ marginRight: '6px' }} /> People
-                    </button>
-                    <button
-                        className={`tab ${activeTab === 'hashtags' ? 'active' : ''}`}
-                        onClick={() => setActiveTab('hashtags')}
-                    >
-                        <FiHash style={{ marginRight: '6px' }} /> Hashtags
-                    </button>
-                    {searchQuery && (
-                        <button
-                            className={`tab ${activeTab === 'search' ? 'active' : ''}`}
-                            onClick={() => setActiveTab('search')}
-                        >
-                            <FiSearch style={{ marginRight: '6px' }} /> Results
-                        </button>
+                <div className="swipe-container">
+                    {loading ? (
+                        <div className="spinner"></div>
+                    ) : profiles.length === 0 ? (
+                        <div className="empty-state">
+                            <div className="empty-state-icon">🎉</div>
+                            <h3>You've seen everyone!</h3>
+                            <p>Come back later for more potential matches.</p>
+                            <button className="btn btn-primary" onClick={loadProfiles}>
+                                Refresh
+                            </button>
+                        </div>
+                    ) : (
+                        <AnimatePresence>
+                            {profiles.map((profile, index) => (
+                                <Card
+                                    key={profile.id}
+                                    profile={profile}
+                                    onSwipe={handleSwipe}
+                                    isTop={index === profiles.length - 1}
+                                />
+                            ))}
+                        </AnimatePresence>
                     )}
                 </div>
 
-                {loading ? (
-                    <div style={{ textAlign: 'center', padding: '60px' }}>
-                        <div className="spinner"></div>
+                {matchModal && (
+                    <div className="match-popup" onClick={() => setMatchModal(null)}>
+                        <div className="empty-state" style={{ background: 'white', color: 'black', padding: '40px', borderRadius: '20px' }}>
+                            <h1 style={{ fontSize: '3rem', margin: '0 0 10px 0', background: 'linear-gradient(45deg, #ff4b1f, #ff9068)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                                It's a Match!
+                            </h1>
+                            <p style={{ fontSize: '1.2rem', color: '#666' }}>
+                                You and {matchModal.fullName} liked each other!
+                            </p>
+                            <div style={{ display: 'flex', gap: '20px', marginTop: '20px', justifyContent: 'center' }}>
+                                <img src={getAvatarUrl(matchModal)} style={{ width: '80px', height: '80px', borderRadius: '50%', objectFit: 'cover' }} />
+                            </div>
+                            <button className="btn btn-primary" style={{ marginTop: '20px', width: '100%' }}>
+                                Send Message
+                            </button>
+                        </div>
                     </div>
-                ) : (
-                    <>
-                        {/* Trending Posts */}
-                        {activeTab === 'trending' && (
-                            <>
-                                {trendingPosts.length === 0 ? (
-                                    <div className="empty-state">
-                                        <div className="empty-state-icon">🔥</div>
-                                        <h3>No trending posts yet</h3>
-                                        <p>Be the first to create something awesome!</p>
-                                    </div>
-                                ) : (
-                                    trendingPosts.map(post => (
-                                        <PostCard key={post.id} post={post} />
-                                    ))
-                                )}
-                            </>
-                        )}
-
-                        {/* Suggested People */}
-                        {activeTab === 'people' && (
-                            <div style={{
-                                background: 'var(--bg-card)',
-                                borderRadius: '20px',
-                                padding: '20px',
-                                border: '1px solid var(--border-dark)'
-                            }}>
-                                <h3 style={{ marginBottom: '16px', fontSize: '1.1rem' }}>Suggested for you</h3>
-
-                                {suggestedUsers.length === 0 ? (
-                                    <p style={{ color: 'var(--text-muted)', textAlign: 'center', padding: '40px' }}>
-                                        No suggestions available right now
-                                    </p>
-                                ) : (
-                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px' }}>
-                                        {suggestedUsers.map(user => (
-                                            <div key={user.id} style={{
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: '14px',
-                                                padding: '16px',
-                                                background: 'var(--bg-input)',
-                                                borderRadius: '16px'
-                                            }}>
-                                                <Link to={`/profile/${user.id}`}>
-                                                    <img
-                                                        src={getAvatarUrl(user)}
-                                                        alt={user.fullName}
-                                                        style={{ width: '50px', height: '50px', borderRadius: '14px', objectFit: 'cover' }}
-                                                    />
-                                                </Link>
-                                                <div style={{ flex: 1, minWidth: 0 }}>
-                                                    <Link to={`/profile/${user.id}`}>
-                                                        <div style={{ fontWeight: '600', fontSize: '0.95rem' }}>{user.fullName}</div>
-                                                    </Link>
-                                                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                                                        @{user.username}
-                                                    </div>
-                                                    {user.college && (
-                                                        <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '2px' }}>
-                                                            {user.college}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                                <button
-                                                    className="follow-btn"
-                                                    onClick={() => handleFollow(user.id)}
-                                                >
-                                                    Follow
-                                                </button>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        )}
-
-                        {/* Hashtags */}
-                        {activeTab === 'hashtags' && (
-                            <div className="empty-state">
-                                <div className="empty-state-icon">#️⃣</div>
-                                <h3>Hashtags coming soon</h3>
-                                <p>Explore trending topics and hashtags</p>
-                            </div>
-                        )}
-
-                        {/* Search Results */}
-                        {activeTab === 'search' && (
-                            <>
-                                {searching ? (
-                                    <div style={{ textAlign: 'center', padding: '60px' }}>
-                                        <div className="spinner"></div>
-                                        <p style={{ marginTop: '16px', color: 'var(--text-muted)' }}>Searching...</p>
-                                    </div>
-                                ) : searchResults.users.length === 0 ? (
-                                    <div className="empty-state">
-                                        <div className="empty-state-icon">🔍</div>
-                                        <h3>No results found</h3>
-                                        <p>Try searching with different keywords</p>
-                                    </div>
-                                ) : (
-                                    <div style={{
-                                        background: 'var(--bg-card)',
-                                        borderRadius: '20px',
-                                        padding: '20px',
-                                        border: '1px solid var(--border-dark)'
-                                    }}>
-                                        <h3 style={{ marginBottom: '16px', fontSize: '1rem' }}>
-                                            Found {searchResults.users.length} users
-                                        </h3>
-
-                                        {searchResults.users.map(user => (
-                                            <div key={user.id} style={{
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: '14px',
-                                                padding: '14px 0',
-                                                borderBottom: '1px solid var(--border-dark)'
-                                            }}>
-                                                <Link to={`/profile/${user.id}`}>
-                                                    <img
-                                                        src={getAvatarUrl(user)}
-                                                        alt={user.fullName}
-                                                        style={{ width: '48px', height: '48px', borderRadius: '12px', objectFit: 'cover' }}
-                                                    />
-                                                </Link>
-                                                <div style={{ flex: 1 }}>
-                                                    <Link to={`/profile/${user.id}`}>
-                                                        <div style={{ fontWeight: '600' }}>{user.fullName}</div>
-                                                    </Link>
-                                                    <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                                                        @{user.username}
-                                                    </div>
-                                                </div>
-                                                <button className="follow-btn" onClick={() => handleFollow(user.id)}>
-                                                    Follow
-                                                </button>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </>
-                        )}
-                    </>
                 )}
             </main>
         </div>
+    );
+}
+
+function Card({ profile, onSwipe, isTop }) {
+    const x = useMotionValue(0);
+    const rotate = useTransform(x, [-200, 200], [-10, 10]);
+    const opacity = useTransform(x, [-200, -100, 0, 100, 200], [0, 1, 1, 1, 0]);
+
+    // Only allow drag if it's the top card
+    const dragProps = isTop ? {
+        drag: "x",
+        dragConstraints: { left: 0, right: 0 },
+        onDragEnd: (e, { offset, velocity }) => {
+            const swipeThreshold = 50;
+            if (offset.x > swipeThreshold) {
+                onSwipe('right', profile);
+            } else if (offset.x < -swipeThreshold) {
+                onSwipe('left', profile);
+            }
+        }
+    } : {};
+
+    return (
+        <motion.div
+            className="swipe-card"
+            style={{ x, rotate, opacity, zIndex: isTop ? 100 : 0 }}
+            {...dragProps}
+            initial={{ scale: 0.95 }}
+            animate={{ scale: 1 }}
+            exit={{ x: x.get() < 0 ? -1000 : 1000, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+        >
+            <div className="card-image-container">
+                <img
+                    draggable="false"
+                    src={getAvatarUrl(profile)}
+                    alt={profile.fullName}
+                    className="card-image"
+                />
+                <div className="card-gradient"></div>
+                <div className="match-score-badge">
+                    <FiStar color="#facc15" fill="#facc15" />
+                    {Math.round(profile.matchScore?.total || 0)}% Match
+                </div>
+            </div>
+
+            <div className="card-info">
+                <div>
+                    <h2 style={{ fontSize: '1.8rem', marginBottom: '4px' }}>
+                        {profile.fullName}, <span style={{ fontWeight: 'normal', fontSize: '1.4rem' }}>{profile.batch || 'Fresher'}</span>
+                    </h2>
+                    <p style={{ color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <FiBriefcase /> {profile.college}
+                    </p>
+                    <p style={{ color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.9rem' }}>
+                        <FiMapPin /> {profile.location || 'Campus'}
+                    </p>
+                </div>
+
+                <div className="swipe-buttons">
+                    <button className="swipe-btn pass" onClick={() => onSwipe('left', profile)}>
+                        <FiX />
+                    </button>
+                    <button className="swipe-btn like" onClick={() => onSwipe('right', profile)}>
+                        <FiHeart fill="currentColor" />
+                    </button>
+                </div>
+            </div>
+        </motion.div>
     );
 }

@@ -1,5 +1,7 @@
 // User Controller
 const prisma = require('../config/database');
+const { getIO } = require('../socket/socket.registry');
+const { sendNotification } = require('../socket/socket.handler');
 
 // Get user profile by ID
 const getProfile = async (req, res) => {
@@ -21,9 +23,13 @@ const getProfile = async (req, res) => {
                 batch: true,
                 graduationYear: true,
                 location: true,
+                interests: true,
+                isProfileComplete: true,
                 isVerified: true,
                 isOnline: true,
                 lastSeen: true,
+                profilePrivacy: true,
+                socialLinks: true,
                 createdAt: true,
                 _count: {
                     select: {
@@ -53,6 +59,23 @@ const getProfile = async (req, res) => {
             isFollowing = !!follow;
         }
 
+        // Parse JSON fields
+        if (user.interests) { try { user.interests = JSON.parse(user.interests); } catch (e) { } }
+        if (user.socialLinks) { try { user.socialLinks = JSON.parse(user.socialLinks); } catch (e) { } }
+
+        // Privacy enforcement: if profile is private and viewer is not the owner and not following
+        const isOwn = req.user?.id === id;
+        if (!isOwn && user.profilePrivacy === 'PRIVATE' && !isFollowing) {
+            return res.json({
+                user: {
+                    id: user.id, fullName: user.fullName, username: user.username,
+                    avatarUrl: user.avatarUrl, coverUrl: user.coverUrl, bio: user.bio,
+                    isVerified: user.isVerified, profilePrivacy: user.profilePrivacy,
+                    _count: user._count, isFollowing, isPrivate: true
+                }
+            });
+        }
+
         res.json({ user: { ...user, isFollowing } });
     } catch (error) {
         console.error('Get profile error:', error);
@@ -63,9 +86,13 @@ const getProfile = async (req, res) => {
 // Update profile
 const updateProfile = async (req, res) => {
     try {
+        console.log('Update Profile Body:', JSON.stringify(req.body, null, 2));
+
         const allowedFields = [
             'fullName', 'username', 'bio', 'college', 'department',
-            'batch', 'graduationYear', 'phone', 'location', 'avatarUrl', 'coverUrl'
+            'batch', 'graduationYear', 'phone', 'location', 'avatarUrl',
+            'coverUrl', 'interests', 'profilePrivacy', 'socialLinks',
+            'notificationPrefs'
         ];
 
         const updateData = {};
@@ -73,6 +100,23 @@ const updateProfile = async (req, res) => {
             if (req.body[field] !== undefined) {
                 updateData[field] = req.body[field];
             }
+        }
+
+        // Handle JSON serialization for SQLite
+        // JSON serialize array/object fields for SQLite
+        if (updateData.socialLinks && typeof updateData.socialLinks === 'object') {
+            updateData.socialLinks = JSON.stringify(updateData.socialLinks);
+        }
+        if (updateData.notificationPrefs && typeof updateData.notificationPrefs === 'object') {
+            updateData.notificationPrefs = JSON.stringify(updateData.notificationPrefs);
+        }
+        if (updateData.interests && Array.isArray(updateData.interests)) {
+            updateData.interests = JSON.stringify(updateData.interests);
+        }
+
+        // Check profile completion (simplistic check: if essential fields are present)
+        if (req.body.isProfileComplete !== undefined) {
+            updateData.isProfileComplete = req.body.isProfileComplete;
         }
 
         // Check username uniqueness if updating
@@ -87,6 +131,11 @@ const updateProfile = async (req, res) => {
                 return res.status(400).json({ error: 'Username already taken' });
             }
             updateData.username = updateData.username.toLowerCase();
+        }
+
+        // Validation: Graduation Year to Int
+        if (updateData.graduationYear) {
+            updateData.graduationYear = parseInt(updateData.graduationYear);
         }
 
         const user = await prisma.user.update({
@@ -105,14 +154,29 @@ const updateProfile = async (req, res) => {
                 batch: true,
                 graduationYear: true,
                 phone: true,
-                location: true
+                location: true,
+                interests: true,
+                isProfileComplete: true
             }
         });
+
+        // Parse JSON for response
+        if (user.interests) {
+            try {
+                user.interests = JSON.parse(user.interests);
+            } catch (e) {
+                // Keep as string or empty array if parse fails
+            }
+        }
 
         res.json({ message: 'Profile updated', user });
     } catch (error) {
         console.error('Update profile error:', error);
-        res.status(500).json({ error: 'Failed to update profile' });
+        // Better error handling for Prisma validation errors
+        if (error.code === 'P2002') {
+            return res.status(400).json({ error: 'Unique constraint failed' });
+        }
+        res.status(500).json({ error: 'Failed to update profile', details: error.message });
     }
 };
 
@@ -148,13 +212,21 @@ const followUser = async (req, res) => {
         });
 
         // Create notification
-        await prisma.notification.create({
+        const notification = await prisma.notification.create({
             data: {
                 type: 'follow',
                 receiverId: id,
                 senderId: req.user.id
+            },
+            include: {
+                sender: {
+                    select: { id: true, fullName: true, avatarUrl: true }
+                }
             }
         });
+
+        // Emit real-time notification
+        if (getIO()) sendNotification(getIO(), id, notification);
 
         res.json({ message: 'User followed successfully' });
     } catch (error) {
@@ -310,6 +382,82 @@ const getFollowing = async (req, res) => {
     }
 };
 
+// Block a user
+const blockUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (id === req.user.id) return res.status(400).json({ error: 'Cannot block yourself' });
+
+        const targetUser = await prisma.user.findUnique({ where: { id }, select: { id: true } });
+        if (!targetUser) return res.status(404).json({ error: 'User not found' });
+
+        const existing = await prisma.block.findUnique({
+            where: { blockerId_blockedId: { blockerId: req.user.id, blockedId: id } }
+        });
+        if (existing) return res.status(400).json({ error: 'User already blocked' });
+
+        await prisma.block.create({
+            data: { blockerId: req.user.id, blockedId: id }
+        });
+
+        // Also unfollow each other
+        await prisma.follow.deleteMany({
+            where: {
+                OR: [
+                    { followerId: req.user.id, followingId: id },
+                    { followerId: id, followingId: req.user.id }
+                ]
+            }
+        });
+
+        res.json({ message: 'User blocked', blocked: true });
+    } catch (error) {
+        console.error('Block user error:', error);
+        res.status(500).json({ error: 'Failed to block user' });
+    }
+};
+
+// Unblock a user
+const unblockUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        await prisma.block.deleteMany({
+            where: { blockerId: req.user.id, blockedId: id }
+        });
+
+        res.json({ message: 'User unblocked', blocked: false });
+    } catch (error) {
+        console.error('Unblock user error:', error);
+        res.status(500).json({ error: 'Failed to unblock user' });
+    }
+};
+
+// Get blocked users list
+const getBlockedUsers = async (req, res) => {
+    try {
+        const blocks = await prisma.block.findMany({
+            where: { blockerId: req.user.id },
+            include: {
+                blocked: {
+                    select: {
+                        id: true,
+                        fullName: true,
+                        username: true,
+                        avatarUrl: true
+                    }
+                }
+            },
+            orderBy: { createdAt: 'desc' }
+        });
+
+        res.json({ blockedUsers: blocks.map(b => b.blocked) });
+    } catch (error) {
+        console.error('Get blocked users error:', error);
+        res.status(500).json({ error: 'Failed to get blocked users' });
+    }
+};
+
 module.exports = {
     getProfile,
     updateProfile,
@@ -318,5 +466,8 @@ module.exports = {
     searchUsers,
     getSuggestedUsers,
     getFollowers,
-    getFollowing
+    getFollowing,
+    blockUser,
+    unblockUser,
+    getBlockedUsers
 };

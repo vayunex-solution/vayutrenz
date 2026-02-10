@@ -1,17 +1,15 @@
-// Sidebar Component - With Notifications Badge
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { notificationAPI } from '../services/api';
+import { getAvatarUrl } from '../utils/imageUtils';
 import {
   FiHome, FiCompass, FiHeart, FiMessageCircle, FiUsers,
   FiBriefcase, FiCalendar, FiTrendingUp, FiBell, FiShield,
-  FiSettings, FiSun, FiMoon, FiLogOut
+  FiSettings, FiSun, FiMoon, FiLogOut, FiSearch
 } from 'react-icons/fi';
 import logoImg from '../assets/logo.png';
-
-const API_BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
 
 export default function Sidebar() {
   const { user, logout } = useAuth();
@@ -37,7 +35,7 @@ export default function Sidebar() {
 
   const mainLinks = [
     { to: '/', icon: <FiHome />, label: 'Home Feed' },
-    { to: '/discover', icon: <FiCompass />, label: 'Discover' },
+    { to: '/search', icon: <FiSearch />, label: 'Search' },
     { to: '/matches', icon: <FiHeart />, label: 'Matches' },
     { to: '/messages', icon: <FiMessageCircle />, label: 'Messages' },
     { to: '/notifications', icon: <FiBell />, label: 'Notifications', badge: unreadCount },
@@ -50,15 +48,6 @@ export default function Sidebar() {
   const handleLogout = async () => {
     await logout();
     navigate('/login');
-  };
-
-  const getAvatarUrl = () => {
-    if (user?.avatarUrl) {
-      return user.avatarUrl.startsWith('http')
-        ? user.avatarUrl
-        : `${API_BASE}${user.avatarUrl}`;
-    }
-    return `https://api.dicebear.com/8.x/initials/svg?seed=${user?.fullName}&backgroundColor=facc15&textColor=000`;
   };
 
   return (
@@ -100,7 +89,7 @@ export default function Sidebar() {
                 minWidth: '20px',
                 textAlign: 'center'
               }}>
-                {link.badge > 99 ? '99+' : link.badge}
+                {link.badge > 100 ? '99+' : link.badge}
               </span>
             )}
           </NavLink>
@@ -129,7 +118,7 @@ export default function Sidebar() {
 
       <div className="sidebar-profile" onClick={() => navigate('/profile')}>
         <img
-          src={getAvatarUrl()}
+          src={getAvatarUrl(user)}
           alt={user?.fullName}
         />
         <div className="sidebar-profile-info">

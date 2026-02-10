@@ -1,0 +1,53 @@
+=============================================
+SCHOOL DOST - GIT REPOSITORY SETUP GUIDE
+=============================================
+
+This file documents the correct Git repositories for Frontend and Backend.
+
+---------------------------------------------
+1. FRONTEND (React App)
+---------------------------------------------
+Local Folder: schooldost-app/frontend
+Git Remote URL: https://github.com/schooldostbackend-gif/sd-frontend.git
+
+How to push changes:
+cd frontend
+git add .
+git commit -m "Your message"
+git push origin master
+
+---------------------------------------------
+2. BACKEND (Node.js API)
+---------------------------------------------
+Local Folder: schooldost-app/backend
+Git Remote URL: https://github.com/schooldostbackend-gif/school-dost.git
+
+How to push changes:
+cd backend
+git add .
+git commit -m "Your message"
+git push origin master
+
+=============================================
+TROUBLESHOOTING NOTES
+=============================================
+- Error 403: Means "Permission Denied". Ensure you are logged in to the GitHub account 'schooldostbackend-gif'.
+- Error 404: Means "Repository Not Found". Check if the repository URL is copied correctly or if the repo is Private.
+
+---------------------------------------------
+RECENT UPDATES (To be pushed)
+---------------------------------------------
+1. Frontend: Added .htaccess for 404 error fix on Hostinger.
+2. Backend: Added auto-creation of 'uploads' folder for image fix.
+3. Backend: Relaxed password validation (min 6 chars).
+
+4. Frontend: Fixed WebSocket connection error (was connecting to localhost).
+5. Backend: Fixed 500 Error on Notifications (Schema mismatch 'read' vs 'isRead').
+
+---------------------------------------------
+HOW TO USE YOUR PERSONAL ACCESS TOKEN (PAT)
+---------------------------------------------
+If you see an authentication error, use the Token you generated as your PASSWORD.
+1. Run `git push origin master`
+2. When asked for Username, enter: schooldostbackend-gif
+3. When asked for Password, Paste your Token: ghp_fl1CsblJ1lc9N1BeypkOxqc7jcWMK10AUYjh

@@ -2,7 +2,7 @@
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const prisma = require('../config/database');
-const { generateToken } = require('../middleware/auth.middleware');
+const { generateToken, generateRefreshToken, verifyRefreshToken } = require('../middleware/auth.middleware');
 const { sendVerificationEmail, sendPasswordResetEmail, sendOtpEmail, sendWelcomeEmail } = require('../config/email');
 const { validatePassword } = require('../middleware/security.middleware');
 
@@ -116,9 +116,16 @@ const login = async (req, res) => {
                 fullName: true,
                 username: true,
                 avatarUrl: true,
+                coverUrl: true,
+                bio: true,
+                college: true,
+                department: true,
+                batch: true,
+                isProfileComplete: true,
                 isVerified: true,
                 emailVerified: true,
-                googleId: true
+                googleId: true,
+                role: true
             }
         });
 
@@ -143,8 +150,9 @@ const login = async (req, res) => {
             data: { isOnline: true }
         });
 
-        // Generate token
+        // Generate tokens
         const token = generateToken(user.id);
+        const refreshToken = generateRefreshToken(user.id);
 
         // Remove password from response
         const { password: _, ...userWithoutPassword } = user;
@@ -152,7 +160,8 @@ const login = async (req, res) => {
         res.json({
             message: 'Login successful',
             user: userWithoutPassword,
-            token
+            token,
+            refreshToken
         });
     } catch (error) {
         console.error('Login error:', error);
@@ -389,8 +398,12 @@ const me = async (req, res) => {
                 graduationYear: true,
                 phone: true,
                 location: true,
+                interests: true,
+                isProfileComplete: true,
+                isVerified: true,
                 isVerified: true,
                 emailVerified: true,
+                role: true,
                 createdAt: true,
                 _count: {
                     select: {
@@ -423,6 +436,39 @@ const logout = async (req, res) => {
         res.status(500).json({ error: 'Logout failed' });
     }
 };
+// Refresh Token
+const refreshTokenEndpoint = async (req, res) => {
+    try {
+        const { refreshToken } = req.body;
+        if (!refreshToken) return res.status(400).json({ error: 'Refresh token required' });
+
+        const decoded = verifyRefreshToken(refreshToken);
+        const user = await prisma.user.findUnique({ where: { id: decoded.userId } });
+        if (!user) return res.status(401).json({ error: 'User not found' });
+        if (user.isBanned) return res.status(403).json({ error: 'Account banned' });
+
+        const newToken = generateToken(user.id);
+        const newRefreshToken = generateRefreshToken(user.id);
+
+        res.json({ token: newToken, refreshToken: newRefreshToken });
+    } catch (error) {
+        return res.status(401).json({ error: 'Invalid refresh token' });
+    }
+};
+
+// Deactivate Account
+const deactivateAccount = async (req, res) => {
+    try {
+        await prisma.user.update({
+            where: { id: req.user.id },
+            data: { isDeactivated: true, isOnline: false }
+        });
+        res.json({ message: 'Account deactivated. Login again to reactivate.' });
+    } catch (error) {
+        console.error('Deactivate error:', error);
+        res.status(500).json({ error: 'Failed to deactivate' });
+    }
+};
 
 module.exports = { 
     register, 
@@ -434,5 +480,7 @@ module.exports = {
     resendOtp,
     forgotPassword, 
     resetPassword,
-    googleCallback
+    googleCallback,
+    refreshTokenEndpoint,
+    deactivateAccount
 };

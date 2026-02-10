@@ -29,47 +29,63 @@ const prisma = require('../config/database');
 const calculateAffinity = async (currentUser, targetUser) => {
   let score = 0;
 
-  // Same college (+30)
+  // 1. Same College (CRITICAL) - 30 Points
   if (currentUser.college && targetUser.college &&
-    currentUser.college.toLowerCase() === targetUser.college.toLowerCase()) {
+    currentUser.college.toLowerCase().trim() === targetUser.college.toLowerCase().trim()) {
     score += 30;
   }
 
-  // Same batch (+25)
+  // 2. Same Batch (HIGH RELEVANCE) - 20 Points
   if (currentUser.batch && targetUser.batch &&
     currentUser.batch === targetUser.batch) {
-    score += 25;
-  }
-
-  // Same department (+20)
-  if (currentUser.department && targetUser.department &&
-    currentUser.department.toLowerCase() === targetUser.department.toLowerCase()) {
     score += 20;
   }
 
-  // Same location (+10)
+  // 3. Same Department/Stream - 15 Points
+  if (currentUser.department && targetUser.department &&
+    currentUser.department.toLowerCase().trim() === targetUser.department.toLowerCase().trim()) {
+    score += 15;
+  }
+
+  // 4. Interests Match (THE MAGIC FACTOR) - Max 25 Points
+  if (currentUser.interests && targetUser.interests) {
+      try {
+          const userInterests = JSON.parse(currentUser.interests);
+          const targetInterests = JSON.parse(targetUser.interests);
+          
+          if (Array.isArray(userInterests) && Array.isArray(targetInterests)) {
+              const common = userInterests.filter(i => 
+                  targetInterests.some(t => t.toLowerCase() === i.toLowerCase())
+              );
+              // 5 points per interest, max 25
+              score += Math.min(common.length * 5, 25);
+          }
+      } catch (e) {
+          // Silent fail for JSON parse
+      }
+  }
+
+  // 5. Location/City - 10 Points
   if (currentUser.location && targetUser.location &&
-    currentUser.location.toLowerCase() === targetUser.location.toLowerCase()) {
+    currentUser.location.toLowerCase().includes(targetUser.location.toLowerCase())) {
     score += 10;
   }
 
-  // Mutual followers (check if they follow each other's following)
+  // Bonus: Mutual Followers (Shared Connections) - Max 10 Points
+  // (Reduced weight to prioritize profile data)
   try {
     const mutualCount = await prisma.follow.count({
       where: {
         followerId: currentUser.id,
         following: {
-          followers: {
-            some: { followerId: targetUser.id }
-          }
+          followers: { some: { followerId: targetUser.id } }
         }
       }
     });
-    score += Math.min(mutualCount * 5, 25); // Max 25 points
-  } catch (e) {
-    // Continue without mutual followers score
-  }
+    score += Math.min(mutualCount * 2, 10);
+  } catch (e) {}
 
+  // Cap at 100
   return Math.min(score, 100);
 };
 

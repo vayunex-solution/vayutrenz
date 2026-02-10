@@ -4,10 +4,15 @@ const prisma = require('../config/database');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'schooldost-secret-key';
 
-// Store online users: { oduserId: socketId }
+// Store online users: { userId: Set of socketIds } (allows multiple tabs)
 const onlineUsers = new Map();
+const MAX_CONNECTIONS_PER_USER = 5; // Limit connections per user
 
 const setupSocket = (io) => {
+    // Configure socket.io for stability
+    io.engine.pingTimeout = 60000; // 60 seconds
+    io.engine.pingInterval = 25000; // 25 seconds
+
     // Authentication middleware for socket connections
     io.use(async (socket, next) => {
         try {
@@ -30,27 +35,51 @@ const setupSocket = (io) => {
             socket.user = user;
             next();
         } catch (error) {
+            console.error('Socket auth error:', error.message);
             next(new Error('Invalid token'));
         }
     });
 
     io.on('connection', async (socket) => {
-        console.log(`User connected: ${socket.user.fullName} (${socket.user.id})`);
+        const userId = socket.user.id;
 
-        // Add user to online users
-        onlineUsers.set(socket.user.id, socket.id);
+        // Check connection limit per user
+        if (!onlineUsers.has(userId)) {
+            onlineUsers.set(userId, new Set());
+        }
 
-        // Update user online status
-        await prisma.user.update({
-            where: { id: socket.user.id },
-            data: { isOnline: true }
-        });
+        const userSockets = onlineUsers.get(userId);
+        if (userSockets.size >= MAX_CONNECTIONS_PER_USER) {
+            console.log(`⚠️ Connection limit reached for ${socket.user.fullName}`);
+            socket.emit('error', { message: 'Too many connections' });
+            socket.disconnect(true);
+            return;
+        }
 
-        // Broadcast online status to all users
-        io.emit('user:online', { userId: socket.user.id });
+        userSockets.add(socket.id);
+        console.log(`User connected: ${socket.user.fullName} (${userId}) - ${userSockets.size} active connections`);
+
+        // Update user online status (only if first connection)
+        if (userSockets.size === 1) {
+            try {
+                await prisma.user.update({
+                    where: { id: userId },
+                    data: { isOnline: true, lastSeen: new Date() }
+                });
+                // Broadcast online status to all users
+                io.emit('user:online', { userId });
+            } catch (err) {
+                console.error('DB update error:', err.message);
+            }
+        }
 
         // Join user to their personal room for notifications
-        socket.join(`user:${socket.user.id}`);
+        socket.join(`user:${userId}`);
+
+        // Error handler for this socket
+        socket.on('error', (error) => {
+            console.error(`Socket error for ${socket.user.fullName}:`, error.message);
+        });
 
         // ========== DIRECT MESSAGING ==========
         socket.on('message:send', async (data) => {
@@ -94,17 +123,44 @@ const setupSocket = (io) => {
 
         // ========== TYPING INDICATOR ==========
         socket.on('typing:start', ({ receiverId }) => {
-            const receiverSocketId = onlineUsers.get(receiverId);
-            if (receiverSocketId) {
-                io.to(receiverSocketId).emit('typing:start', { userId: socket.user.id });
-            }
+            io.to(`user:${receiverId}`).emit('typing:start', {
+                userId: socket.user.id,
+                fullName: socket.user.fullName
+            });
         });
 
         socket.on('typing:stop', ({ receiverId }) => {
-            const receiverSocketId = onlineUsers.get(receiverId);
-            if (receiverSocketId) {
-                io.to(receiverSocketId).emit('typing:stop', { userId: socket.user.id });
+            io.to(`user:${receiverId}`).emit('typing:stop', {
+                userId: socket.user.id
+            });
+        });
+
+        // ========== READ RECEIPTS ==========
+        socket.on('message:read', async ({ senderId }) => {
+            try {
+                await prisma.message.updateMany({
+                    where: {
+                        senderId,
+                        receiverId: socket.user.id,
+                        isRead: false
+                    },
+                    data: { isRead: true }
+                });
+                io.to(`user:${senderId}`).emit('message:read', {
+                    readBy: socket.user.id
+                });
+            } catch (err) {
+                console.error('Read receipt error:', err.message);
             }
+        });
+
+        // ========== MESSAGE DELETE/EDIT REAL-TIME ==========
+        socket.on('message:delete', ({ messageId, receiverId }) => {
+            io.to(`user:${receiverId}`).emit('message:deleted', { messageId });
+        });
+
+        socket.on('message:edit', ({ message, receiverId }) => {
+            io.to(`user:${receiverId}`).emit('message:edited', message);
         });
 
         // ========== GROUP MESSAGING ==========
@@ -178,19 +234,29 @@ const setupSocket = (io) => {
 
         // ========== DISCONNECT ==========
         socket.on('disconnect', async () => {
-            console.log(`User disconnected: ${socket.user.fullName}`);
+            const userId = socket.user.id;
+            const userSockets = onlineUsers.get(userId);
 
-            // Remove from online users
-            onlineUsers.delete(socket.user.id);
+            if (userSockets) {
+                userSockets.delete(socket.id);
+                console.log(`User disconnected: ${socket.user.fullName} - ${userSockets.size} connections remaining`);
 
-            // Update user offline status
-            await prisma.user.update({
-                where: { id: socket.user.id },
-                data: { isOnline: false, lastSeen: new Date() }
-            });
+                // Only mark offline if no more connections
+                if (userSockets.size === 0) {
+                    onlineUsers.delete(userId);
 
-            // Broadcast offline status
-            io.emit('user:offline', { userId: socket.user.id });
+                    try {
+                        await prisma.user.update({
+                            where: { id: userId },
+                            data: { isOnline: false, lastSeen: new Date() }
+                        });
+                        // Broadcast offline status
+                        io.emit('user:offline', { userId });
+                    } catch (err) {
+                        console.error('DB update error:', err.message);
+                    }
+                }
+            }
         });
     });
 

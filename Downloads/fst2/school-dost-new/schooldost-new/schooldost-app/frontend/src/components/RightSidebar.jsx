@@ -1,8 +1,8 @@
-// Right Sidebar - Reference Design
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FiSearch, FiMic } from 'react-icons/fi';
 import { userAPI, postAPI } from '../services/api';
+import { getAvatarUrl } from '../utils/imageUtils';
 
 export default function RightSidebar() {
   const [suggestions, setSuggestions] = useState([]);
@@ -67,7 +67,7 @@ export default function RightSidebar() {
             <div key={user.id} className="user-suggestion">
               <Link to={`/profile/${user.id}`}>
                 <img 
-                  src={user.avatarUrl || `https://api.dicebear.com/8.x/initials/svg?seed=${user.fullName}&backgroundColor=facc15&textColor=000`}
+                  src={getAvatarUrl(user)}
                   alt={user.fullName}
                 />
               </Link>

@@ -1,25 +1,48 @@
-// Admin Routes
 const express = require('express');
 const router = express.Router();
+const {
+    getAnalytics,
+    getChartData,
+    getAllUsers,
+    updateUserRole,
+    toggleBanUser,
+    deleteUser,
+    getAllPosts,
+    deletePost,
+    getReports,
+    resolveReport,
+    createReport
+} = require('../controllers/admin.controller');
 const { authenticate } = require('../middleware/auth.middleware');
-const { isAdmin, isModerator } = require('../middleware/admin.middleware');
-const adminController = require('../controllers/admin.controller');
 
-// Dashboard - Admin only
-router.get('/dashboard', authenticate, isAdmin, adminController.getDashboardStats);
+// Middleware to check Admin/Moderator Role
+const requireAdmin = (req, res, next) => {
+    if (req.user && (req.user.role === 'ADMIN' || req.user.role === 'MODERATOR')) {
+        next();
+    } else {
+        res.status(403).json({ error: 'Admin/Moderator access required' });
+    }
+};
 
-// User Management - Admin only
-router.get('/users', authenticate, isAdmin, adminController.getUsers);
-router.put('/users/:userId/role', authenticate, isAdmin, adminController.updateUserRole);
-router.put('/users/:userId/ban', authenticate, isAdmin, adminController.banUser);
-router.delete('/users/:userId', authenticate, isAdmin, adminController.deleteUser);
+// ===== ANALYTICS =====
+router.get('/analytics', authenticate, requireAdmin, getAnalytics);
+router.get('/charts', authenticate, requireAdmin, getChartData);
 
-// Content Moderation - Moderators and Admins
-router.get('/posts', authenticate, isModerator, adminController.getPosts);
-router.delete('/posts/:postId', authenticate, isModerator, adminController.deletePost);
+// ===== USER MANAGEMENT =====
+router.get('/users', authenticate, requireAdmin, getAllUsers);
+router.put('/users/:id/role', authenticate, requireAdmin, updateUserRole);
+router.post('/users/:id/ban', authenticate, requireAdmin, toggleBanUser);
+router.delete('/users/:id', authenticate, requireAdmin, deleteUser);
 
-// Reports - Moderators and Admins
-router.get('/reports', authenticate, isModerator, adminController.getReports);
-router.put('/reports/:reportId', authenticate, isModerator, adminController.handleReport);
+// ===== POST MANAGEMENT =====
+router.get('/posts', authenticate, requireAdmin, getAllPosts);
+router.delete('/posts/:id', authenticate, requireAdmin, deletePost);
+
+// ===== REPORTS =====
+router.get('/reports', authenticate, requireAdmin, getReports);
+router.post('/reports/:id/resolve', authenticate, requireAdmin, resolveReport);
+
+// Public/User Routes (For submitting reports - any authenticated user)
+router.post('/reports', authenticate, createReport);
 
 module.exports = router;

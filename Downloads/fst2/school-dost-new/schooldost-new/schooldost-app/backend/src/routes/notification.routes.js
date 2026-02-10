@@ -16,6 +16,9 @@ router.put('/:id/read', authenticate, notificationController.markAsRead);
 // Mark all as read
 router.put('/read-all', authenticate, notificationController.markAllAsRead);
 
+// Subscribe to Push
+router.post('/subscribe', authenticate, notificationController.subscribeToPush);
+
 // Delete notification
 router.delete('/:id', authenticate, notificationController.deleteNotification);
 

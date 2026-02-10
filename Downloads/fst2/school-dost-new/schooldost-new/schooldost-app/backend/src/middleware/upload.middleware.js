@@ -1,12 +1,17 @@
-// File Upload Middleware using Multer
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 
 // Storage configuration
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/');
+    const uploadPath = path.join(__dirname, '../../uploads');
+    // Ensure directory exists
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+    cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
     const uniqueName = `${uuidv4()}${path.extname(file.originalname)}`;
@@ -18,7 +23,7 @@ const storage = multer.diskStorage({
 const fileFilter = (req, file, cb) => {
   const allowedTypes = [
     'image/jpeg',
-    'image/jpg', 
+    'image/jpg',
     'image/png',
     'image/gif',
     'image/webp'
@@ -27,7 +32,7 @@ const fileFilter = (req, file, cb) => {
     // 'video/webm',
     // 'video/quicktime'
   ];
-  
+
   if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
@@ -67,11 +72,11 @@ const handleUploadError = (err, req, res, next) => {
     }
     return res.status(400).json({ error: err.message });
   }
-  
+
   if (err) {
     return res.status(400).json({ error: err.message });
   }
-  
+
   next();
 };
 

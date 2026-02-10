@@ -4,15 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { userAPI, uploadAPI } from '../services/api';
 import Sidebar from '../components/Sidebar';
+import { getAvatarUrl, getCoverUrl } from '../utils/imageUtils';
 import { FiCamera, FiSave, FiLogOut, FiUser, FiMail, FiMapPin, FiBook, FiCalendar } from 'react-icons/fi';
-
-const API_BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
 
 export default function Settings() {
   const { user, logout, updateUser } = useAuth();
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
-  
+
   const [formData, setFormData] = useState({
     fullName: user?.fullName || '',
     username: user?.username || '',
@@ -53,8 +52,8 @@ export default function Settings() {
     setUploadingAvatar(true);
     try {
       const { data } = await uploadAPI.avatar(file);
-      const fullAvatarUrl = `${API_BASE}${data.avatarUrl}`;
-      updateUser({ ...user, avatarUrl: fullAvatarUrl });
+      // Path returned from backend is /uploads/filename
+      updateUser({ ...user, avatarUrl: data.avatarUrl });
       setMessage({ type: 'success', text: 'Profile picture updated!' });
     } catch (error) {
       console.error('Upload error:', error);
@@ -86,19 +85,11 @@ export default function Settings() {
     navigate('/login');
   };
 
-  const getAvatarUrl = () => {
-    if (user?.avatarUrl) {
-      return user.avatarUrl.startsWith('http') 
-        ? user.avatarUrl 
-        : `${API_BASE}${user.avatarUrl}`;
-    }
-    return `https://api.dicebear.com/8.x/initials/svg?seed=${user?.fullName}&backgroundColor=facc15&textColor=000`;
-  };
 
   return (
     <div className="app-layout">
       <Sidebar />
-      
+
       <main className="main-content" style={{ maxWidth: '800px' }}>
         <header className="page-header">
           <h1>Settings</h1>
@@ -110,8 +101,8 @@ export default function Settings() {
             padding: '14px 18px',
             borderRadius: '12px',
             marginBottom: '24px',
-            background: message.type === 'success' 
-              ? 'rgba(34, 197, 94, 0.1)' 
+            background: message.type === 'success'
+              ? 'rgba(34, 197, 94, 0.1)'
               : 'rgba(239, 68, 68, 0.1)',
             color: message.type === 'success' ? '#22c55e' : '#ef4444',
             border: `1px solid ${message.type === 'success' ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)'}`
@@ -134,12 +125,12 @@ export default function Settings() {
           <div style={{
             height: '150px',
             borderRadius: '12px',
-            background: user?.coverUrl 
-              ? `url(${user.coverUrl.startsWith('http') ? user.coverUrl : API_BASE + user.coverUrl}) center/cover`
+            background: getCoverUrl(user)
+              ? `url(${getCoverUrl(user)}) center/cover`
               : 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
             position: 'relative'
           }}>
-             <button
+            <button
               onClick={() => document.getElementById('coverInput').click()}
               style={{
                 position: 'absolute',
@@ -175,8 +166,7 @@ export default function Settings() {
                 }
                 try {
                   const { data } = await uploadAPI.cover(file);
-                  const fullCoverUrl = `${API_BASE}${data.coverUrl}`;
-                  updateUser({ ...user, coverUrl: fullCoverUrl });
+                  updateUser({ ...user, coverUrl: data.coverUrl });
                   setMessage({ type: 'success', text: 'Banner updated!' });
                 } catch (error) {
                   console.error('Upload error:', error);

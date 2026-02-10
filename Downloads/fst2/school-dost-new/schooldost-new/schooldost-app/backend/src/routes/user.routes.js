@@ -9,7 +9,10 @@ const {
   searchUsers,
   getSuggestedUsers,
   getFollowers,
-  getFollowing
+  getFollowing,
+  blockUser,
+  unblockUser,
+  getBlockedUsers
 } = require('../controllers/user.controller');
 const { authenticate, optionalAuth } = require('../middleware/auth.middleware');
 
@@ -24,5 +27,10 @@ router.get('/suggested/list', authenticate, getSuggestedUsers);
 router.put('/profile', authenticate, updateProfile);
 router.post('/:id/follow', authenticate, followUser);
 router.delete('/:id/follow', authenticate, unfollowUser);
+
+// Block routes
+router.get('/blocked/list', authenticate, getBlockedUsers);
+router.post('/:id/block', authenticate, blockUser);
+router.delete('/:id/block', authenticate, unblockUser);
 
 module.exports = router;
